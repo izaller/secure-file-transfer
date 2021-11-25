@@ -1,13 +1,14 @@
 ###-----------------------------------------------###
-# implementation of client operations for secure
-# file transfer
+# server operations for secure file transfer
 ###-----------------------------------------------###
 
-import sys, os
+import os
+import sys
+
 from netinterface import network_interface
 
 NET_PATH = './network'
-OWN_ADDR = 'U'
+OWN_ADDR = 'S'
 
 if (NET_PATH[-1] != '/') and (NET_PATH[-1] != '\\'): NET_PATH += '/'
 
@@ -21,19 +22,18 @@ if OWN_ADDR not in network_interface.addr_space:
     print('Error: Invalid address ' + OWN_ADDR)
     sys.exit(1)
 
-print(NET_PATH, OWN_ADDR)
-
 netif = network_interface(NET_PATH, OWN_ADDR)
 
+# status, msg = netif.receive_msg(blocking=True)  # when returns, status is True and msg contains a message
 
-dst = 'S'   ## set destination to server
-print('Main client loop started...')
+print('Main loop started, quit with pressing CTRL-C...')
 while True:
-    msg = input('Type a message: ')
-    msg = OWN_ADDR + msg
-    netif.send_msg(dst, msg.encode('utf-8'))
+    status, msg = netif.receive_msg(blocking=True)  # when returns, status is True and msg contains a message
+    print('message received')
+    decoded_msg = msg.decode('utf-8')
+    dst = decoded_msg[0]
+    rsp = 'message received'
+    if status:
+        netif.send_msg(dst, rsp.encode('utf-8'))
+        print('message sent')
 
-    status, rsp = netif.receive_msg(blocking=True)  # when returns, status is True and msg contains a message
-    print(rsp.decode('utf-8'))
-
-    if input('Continue? (y/n): ') == 'n': break

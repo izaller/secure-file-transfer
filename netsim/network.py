@@ -23,9 +23,7 @@ def read_msg(src):
 	last_read[src] += 1
 	return msg, dsts
 
-  
 def write_msg(dst, msg):
-
 	in_dir = NET_PATH + dst + '/IN'
 	msgs = sorted(os.listdir(in_dir))
 
