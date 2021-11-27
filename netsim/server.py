@@ -6,6 +6,7 @@ import os
 import sys
 
 from netinterface import network_interface
+from server_ops import process_msg
 
 NET_PATH = './network'
 OWN_ADDR = 'S'
@@ -28,12 +29,14 @@ netif = network_interface(NET_PATH, OWN_ADDR)
 
 print('Main loop started, quit with pressing CTRL-C...')
 while True:
+    # wait for message
     status, msg = netif.receive_msg(blocking=True)  # when returns, status is True and msg contains a message
     print('message received')
-    decoded_msg = msg.decode('utf-8')
-    dst = decoded_msg[0]
-    rsp = 'message received'
-    if status:
-        netif.send_msg(dst, rsp.encode('utf-8'))
-        print('message sent')
+    # decoded_msg = msg.decode('utf-8')
+    process_msg(netif, status, msg)
+    # dst = decoded_msg[0]
+    # rsp = 'message received'
+    # if status:
+    #     netif.send_msg(dst, rsp.encode('utf-8'))
+    #     print('message sent')
 

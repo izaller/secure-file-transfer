@@ -18,15 +18,23 @@ parameters. The folders correspond to addresses of users on the network.
 ## server.py
 Extremely basic right now.
 
-Using netinterface, waits for message to be received then
-sends response "message received" back to sender.
-
 Requires that first char of message received be the sender's
 address so that server can send response to sender.
+
 ## client.py
 Collects user input message and sends to server using netinterface.
 
 Concatenates user's own address to message before sending so that server.py
 can send a response message.
 
-Waits for server response and then asks client if they want to continue.
+## login
+Extremely rudimentary implementation supported.
+
+Current message format: **[address | login request | password]**
+
+Login request signified by '1'
+
+Password is hard-coded as *password* for all users. If user submits valid password, server returns response '1'. Otherwise the 
+server returns '0'.
+
+Once a user has successfully logged in, they are given a list of commands they can use.
