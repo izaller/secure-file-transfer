@@ -20,6 +20,7 @@ def process_msg(netif, status, msg):
     # decode message
     decoded_msg = msg.decode('utf-8')
 
+    # TODO: parse message
     # get sender
     addr = decoded_msg[0]
 

@@ -30,6 +30,10 @@ def welcome(addr):
     print(' RMF [filename]      --delete the file named filename from the current directory')
     print(' LOGOUT              --log off from the server')
 
+def build_msg(addr, cmd, content):
+    # TODO: add msg length, signature/MAC w/ msg sqn #, encryption, padding on fields
+    return addr + cmd + content
+
 def login(netif, addr):
     # input password in terminal
     logged_in = False
@@ -39,7 +43,7 @@ def login(netif, addr):
 
         # build login request
         ## [address | login request | password]
-        msg = addr + LOGIN + pswd
+        msg = build_msg(addr, LOGIN, pswd)
 
         # send login request
         netif.send_msg(dst, msg.encode('utf-8'))
