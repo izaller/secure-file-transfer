@@ -31,6 +31,7 @@ def welcome(addr):
     print(' RMF [filename]      --delete the file named filename from the current directory')
     print(' LOGOUT              --log off from the server')
 
+# build message to server from user input
 def build_msg(addr, inp):
     # TODO: add msg length, signature/MAC w/ msg sqn #, encryption, padding on fields
     split = inp.split()
@@ -87,4 +88,3 @@ def login(netif, addr):
         logged_in = (login_response == LOGIN_SUCCESS)
         if logged_in: return True
         print('Password incorrect. Please try again')
-

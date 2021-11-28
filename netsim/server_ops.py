@@ -4,6 +4,7 @@
 ###-----------------------------------------------###
 
 LOGIN_SUCCESS = '1'
+LOGIN_FAILURE = '0'
 SERVER_UNAVAILABLE = 'X'
 
 LOGIN = '0'
@@ -43,23 +44,24 @@ def process_msg(netif, status, msg, LOGGED_IN_USER):
         print('Login request received for user ' + addr)
         login(netif, addr, msg_content)
     elif m_type == MKD:
-        print('MKD operation not yet implemented')
+        mkd()
     elif m_type == RMD:
-        print('RMD operation not yet implemented')
+        rmd()
     elif m_type == GWD:
-        print('GWD operation not yet implemented')
+        gwd()
     elif m_type == CWD:
-        print('CWD operation not yet implemented')
+        cwd()
     elif m_type == LST:
-        print('LST operation not yet implemented')
+        lst()
     elif m_type == UPL:
-        print('UPL operation not yet implemented')
+        upl()
     elif m_type == DNL:
-        print('DNL operation not yet implemented')
+        dnl()
     elif m_type == RMF:
-        print('RMF operation not yet implemented')
+        rmf()
     elif m_type == LOGOUT:
-        print('LOGOUT operation not yet implemented')
+        logout()
+        # LOGGED_IN_USER = None
 
     return LOGGED_IN_USER
 
@@ -75,5 +77,42 @@ def login(netif, addr, pswd):
         netif.send_msg(addr, rsp.encode('utf-8'))
         print('User ' + addr + ' logged in')
     else:
-        rsp = '0'
+        rsp = LOGIN_FAILURE
         netif.send_msg(addr, rsp.encode('utf-8'))
+
+
+def mkd():
+    print('MKD operation not yet implemented')
+
+
+def rmd():
+    print('RMD operation not yet implemented')
+
+
+def gwd():
+    print('GWD operation not yet implemented')
+
+
+def cwd():
+    print('CWD operation not yet implemented')
+
+
+def lst():
+    print('LST operation not yet implemented')
+
+
+def upl():
+    print('UPL operation not yet implemented')
+
+
+def dnl():
+    print('DNL operation not yet implemented')
+
+
+def rmf():
+    print('RMF operation not yet implemented')
+
+
+def logout():
+    print('LOGOUT operation not yet implemented')
+

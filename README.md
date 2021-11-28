@@ -40,3 +40,18 @@ Password is hard-coded as *password* for all users. If user submits valid passwo
 server returns '0'.
 
 Once a user has successfully logged in, they are given a list of commands they can use.
+
+### login demo
+In two separate terminal tabs, execute the following commands
+to start the network and the server.
+```
+python3 network.py -p './network/' -a 'USM' --clean
+python3 server.py
+```
+Open another tab and run ```python3 client.py```.
+When prompted, enter 'U' for user address and 'password' for the password.
+You should now be logged in.
+
+Finally, open a fourth tab and once again run ```python3 client.py```.
+When prompted, enter 'M' for user address and any password.
+You should receive the following message: *The server is currently unavailable. Please try again later.*
