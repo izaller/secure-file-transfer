@@ -32,11 +32,10 @@ if login(netif, OWN_ADDR):
     while True:
         inp = input('Type a command: ')
         msg = build_msg(OWN_ADDR, inp)
-        # msg = OWN_ADDR + input    # TODO: change command to number
         if msg is not None:
             netif.send_msg(dst, msg.encode('utf-8'))
 
         # status, rsp = netif.receive_msg(blocking=True)  # when returns, status is True and msg contains a message
         # print(rsp.decode('utf-8'))
 
-        if input('Continue? (y/n): ') == 'n': break
+        # if input('Continue? (y/n): ') == 'n': break

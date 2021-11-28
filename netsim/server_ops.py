@@ -79,39 +79,39 @@ def login(netif, addr, pswd):
         rsp = LOGIN_FAILURE
         netif.send_msg(addr, rsp.encode('utf-8'))
 
-
+# TODO: implement
 def mkd():
     print('MKD operation not yet implemented')
 
-
+# TODO: implement
 def rmd():
     print('RMD operation not yet implemented')
 
-
+# TODO: implement
 def gwd():
     print('GWD operation not yet implemented')
 
-
+# TODO: implement
 def cwd():
     print('CWD operation not yet implemented')
 
-
+# TODO: implement
 def lst():
     print('LST operation not yet implemented')
 
-
+# TODO: implement
 def upl():
     print('UPL operation not yet implemented')
 
-
+# TODO: implement
 def dnl():
     print('DNL operation not yet implemented')
 
-
+# TODO: implement
 def rmf():
     print('RMF operation not yet implemented')
 
-
+# TODO: implement
 def logout():
     print('LOGOUT operation not yet implemented')
 
