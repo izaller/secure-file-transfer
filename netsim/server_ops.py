@@ -21,10 +21,10 @@ PASSWORD = 'password'
 
 def process_msg(netif, status, msg, LOGGED_IN_USER):
     # TODO: (actually) decode message
-    decoded_msg = msg.decode('utf-8')
+    plain = msg.decode('utf-8')
 
     # get sender
-    addr = decoded_msg[0]
+    addr = plain[0]
 
     # check server availability
     print('Checking server availability.\nLogged in user: ' + (LOGGED_IN_USER or 'None') + '\nRequest from: ' + addr)
@@ -36,12 +36,11 @@ def process_msg(netif, status, msg, LOGGED_IN_USER):
     LOGGED_IN_USER = addr
 
     # get message command type and argument
-    cmd = decoded_msg[1]
-    arg = decoded_msg[2:]
+    cmd = plain[1]
 
     if cmd == LOGIN:
         print('Login request received for user ' + addr)
-        login(netif, addr, arg)     # arg = password
+        login(netif, addr, plain[2:])     # arg = password
     elif cmd == MKD:
         mkd()
     elif cmd == RMD:
