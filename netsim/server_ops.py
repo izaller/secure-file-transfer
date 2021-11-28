@@ -20,9 +20,8 @@ LOGOUT = '9'
 PASSWORD = 'password'
 
 def process_msg(netif, status, msg, LOGGED_IN_USER):
-    # decode message
+    # TODO: (actually) decode message
     decoded_msg = msg.decode('utf-8')
-    print(decoded_msg)
 
     # get sender
     addr = decoded_msg[0]
@@ -36,30 +35,30 @@ def process_msg(netif, status, msg, LOGGED_IN_USER):
         return LOGGED_IN_USER
     LOGGED_IN_USER = addr
 
-    # get message type
-    m_type = decoded_msg[1]
-    msg_content = decoded_msg[2:]
+    # get message command type and argument
+    cmd = decoded_msg[1]
+    arg = decoded_msg[2:]
 
-    if m_type == LOGIN:
+    if cmd == LOGIN:
         print('Login request received for user ' + addr)
-        login(netif, addr, msg_content)
-    elif m_type == MKD:
+        login(netif, addr, arg)     # arg = password
+    elif cmd == MKD:
         mkd()
-    elif m_type == RMD:
+    elif cmd == RMD:
         rmd()
-    elif m_type == GWD:
+    elif cmd == GWD:
         gwd()
-    elif m_type == CWD:
+    elif cmd == CWD:
         cwd()
-    elif m_type == LST:
+    elif cmd == LST:
         lst()
-    elif m_type == UPL:
+    elif cmd == UPL:
         upl()
-    elif m_type == DNL:
+    elif cmd == DNL:
         dnl()
-    elif m_type == RMF:
+    elif cmd == RMF:
         rmf()
-    elif m_type == LOGOUT:
+    elif cmd == LOGOUT:
         logout()
         # LOGGED_IN_USER = None
 
