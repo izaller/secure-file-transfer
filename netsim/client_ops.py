@@ -5,16 +5,17 @@
 
 dst = 'S'
 LOGIN_SUCCESS = '1'
-LOGIN = '0'
-MKD = '1'
-RMD = '2'
-GWD = '3'
-CWD = '4'
-LST = '5'
-UPL = '6'
-DNL = '7'
-RMF = '8'
-LOGOUT = '9'
+SERVER_UNAVAILABLE = 'X'
+commands = {'LOGIN': '0',
+            'MKD': '1',
+            'RMD': '2',
+            'GWD': '3',
+            'CWD': '4',
+            'LST': '5',
+            'UPL': '6',
+            'DNL': '7',
+            'RMF': '8',
+            'LOGOUT': '9'}
 
 def welcome(addr):
     print('Login success. Welcome,', addr)
@@ -30,9 +31,34 @@ def welcome(addr):
     print(' RMF [filename]      --delete the file named filename from the current directory')
     print(' LOGOUT              --log off from the server')
 
-def build_msg(addr, cmd, content):
+def build_msg(addr, inp):
     # TODO: add msg length, signature/MAC w/ msg sqn #, encryption, padding on fields
-    return addr + cmd + content
+    split = inp.split()
+    if len(split) > 2:
+        print('Too many arguments: ' + inp + ' is not a valid command input.')
+        return None
+
+    # check input validity
+    cmd = split[0].upper()
+    if cmd not in commands.keys():
+        print(cmd + ' is not a valid command.')
+        return None
+
+    arg = ''
+    ## check for necessary arguments
+    if cmd != 'GWD' and cmd != 'LOGOUT':
+        if len(split) == 1:
+            argname = 'dirname'
+            if cmd == 'UPL':
+                argname = 'path to file'
+            elif cmd == 'DNL' or cmd == 'RMF':
+                argname = 'filename'
+            print(cmd + ' requires argument: ' + argname)
+            return None
+        arg = split[1]
+
+    cmd_code = commands[cmd]
+    return addr + cmd_code + arg
 
 def login(netif, addr):
     # input password in terminal
@@ -43,7 +69,7 @@ def login(netif, addr):
 
         # build login request
         ## [address | login request | password]
-        msg = build_msg(addr, LOGIN, pswd)
+        msg = addr + commands['LOGIN'] + pswd
 
         # send login request
         netif.send_msg(dst, msg.encode('utf-8'))
@@ -54,7 +80,9 @@ def login(netif, addr):
 
         # TODO: parse response message for accept/reject
         login_response = rsp.decode('utf-8')
-
+        if login_response == SERVER_UNAVAILABLE:
+            print('The server is currently unavailable. Please try again later.')
+            break
         # parse received message
         logged_in = (login_response == LOGIN_SUCCESS)
         if logged_in: return True

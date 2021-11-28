@@ -10,6 +10,7 @@ from server_ops import process_msg
 
 NET_PATH = './network'
 OWN_ADDR = 'S'
+LOGGED_IN_USER = None
 
 if (NET_PATH[-1] != '/') and (NET_PATH[-1] != '\\'): NET_PATH += '/'
 
@@ -33,7 +34,7 @@ while True:
     status, msg = netif.receive_msg(blocking=True)  # when returns, status is True and msg contains a message
     print('message received')
     # decoded_msg = msg.decode('utf-8')
-    process_msg(netif, status, msg)
+    LOGGED_IN_USER = process_msg(netif, status, msg, LOGGED_IN_USER)
     # dst = decoded_msg[0]
     # rsp = 'message received'
     # if status:

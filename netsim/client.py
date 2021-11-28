@@ -5,10 +5,10 @@
 
 import sys, os
 from netinterface import network_interface
-from client_ops import login, welcome
+from client_ops import login, welcome, build_msg
 
 NET_PATH = './network'
-OWN_ADDR = 'U'
+OWN_ADDR = input('Enter user address: ')
 
 if (NET_PATH[-1] != '/') and (NET_PATH[-1] != '\\'): NET_PATH += '/'
 
@@ -30,11 +30,13 @@ dst = 'S'   ## set destination to server
 if login(netif, OWN_ADDR):
     welcome(OWN_ADDR)
     while True:
-        msg = input('Type a command: ')
-        msg = OWN_ADDR + msg
-        netif.send_msg(dst, msg.encode('utf-8'))
+        inp = input('Type a command: ')
+        msg = build_msg(OWN_ADDR, inp)
+        # msg = OWN_ADDR + input    # TODO: change command to number
+        if msg is not None:
+            netif.send_msg(dst, msg.encode('utf-8'))
 
-        status, rsp = netif.receive_msg(blocking=True)  # when returns, status is True and msg contains a message
-        print(rsp.decode('utf-8'))
+        # status, rsp = netif.receive_msg(blocking=True)  # when returns, status is True and msg contains a message
+        # print(rsp.decode('utf-8'))
 
         if input('Continue? (y/n): ') == 'n': break
