@@ -67,9 +67,11 @@ def build_msg(addr, inp):
     cmd_code = commands[cmd]
     return addr + cmd_code + arg
 
-def public_encrypt(msg):
-    return msg
+# TODO: implement
+def public_encrypt(pswd):
+    return pswd
 
+# TODO: implement
 def sign(msg, sqn):
     return ''
 
@@ -78,7 +80,6 @@ def login(netif, addr):
     password_accepted = False
     while not password_accepted:
         pswd = input('Enter password: ')
-        # TODO: encrypt password with public key
         # build login request
         ## [address | login request | password | g^x mod p | sig(...)]
         ## one byte | one byte | 12 bytes | 256 bytes | ??
@@ -86,7 +87,7 @@ def login(netif, addr):
         # compute g^x mod p
         dh = pyDH.DiffieHellman()
         gxmodp = dh.gen_public_key()
-        msg = addr + commands['LOGIN'] + public_encrypt(pswd) + str(gxmodp)     # TODO: implement this function
+        msg = addr + commands['LOGIN'] + public_encrypt(pswd) + str(gxmodp)
         # TODO: sign message with MSN
         sqn = ''
         sig = sign(msg, sqn)
@@ -95,21 +96,22 @@ def login(netif, addr):
         # send login request
         netif.send_msg(server, msg.encode('utf-8'))
 
-        # TODO: set timer
         # wait for server response
         status, rsp = netif.receive_msg(blocking=True)
-        # TODO: parse response message for accept/reject
+
+        # parse response message for accept/reject
         login_response = rsp.decode('utf-8')[0]     # get first byte
         if login_response == SERVER_UNAVAILABLE:
             print('The server is currently unavailable. Please try again later.')
             break
 
-        # parse received message
+        # check if password was accepted
         password_accepted = (login_response == LOGIN_SUCCESS)
 
         # generate session key from DH key and store
         if password_accepted:
-            # TODO: authenticate signature
+            # TODO: parse rsp to get sig_s
+            # TODO: authenticate sig_s
 
             gymodp = int(rsp.decode('utf-8')[1:])
             salt = get_random_bytes(16)

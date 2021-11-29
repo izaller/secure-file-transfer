@@ -103,7 +103,13 @@ def public_decrypt(msg):
 def correct_password(addr, pswd):
     return pswd == PASSWORD
 
+def sign(addr, gxmodp, gymodp):
+    # sigS(addr | g^x mod p | S | g^y mod p)
+    return ''
+
 def login(netif, msg):
+    sig_u = ''  # TODO: parse plainstr to get sig + authenticate
+
     plainstr = public_decrypt(msg).decode('utf-8')
 
     # parse message
@@ -111,14 +117,11 @@ def login(netif, msg):
     pswd = str(plainstr[2:10])
     gxmodp = int(plainstr[10:])
 
-    sig_u = ''  # TODO: authenticate sig (possibly before this in the function)
-
     if correct_password(addr, pswd):    # check password
         # generate diffie-hellman parameters
         dh = pyDH.DiffieHellman()
         gymodp = dh.gen_public_key()    # compute g^y mod p
-
-        sig = ''        # TODO: sign -- sigS(addr | g^x mod p | S | g^y mod p)
+        sig = sign(addr, gxmodp, gymodp)        # TODO: sign -- sigS(addr | g^x mod p | S | g^y mod p)
 
         # response message: [correct password | g^y mod p | sigS(addr | g^x mod p | S | g^y mod p)]
         ##                  12 bytes | 256 bytes | ?? ## TODO: pad passwords to uniform length
@@ -127,11 +130,12 @@ def login(netif, msg):
 
         # wait for final response from client with salt
         status, rsp = netif.receive_msg(blocking=True)
-        salt = rsp[1:17]
 
         # TODO: authenticate signature
+
+        # generate session key from DH key and store
         shared_key = dh.gen_shared_key(gxmodp)  # compute shared key
-        # TODO: generate session key from DH key and store
+        salt = rsp[1:17]
         AES_key = HKDF(shared_key.encode('utf-8'), 32, salt, SHA512, 1)
         print('AES_key', AES_key)
         print('User ' + addr + ' logged in')
