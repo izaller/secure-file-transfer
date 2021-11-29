@@ -5,6 +5,7 @@ project completed in fulfillment of requirements for Aquincum Institute of Techn
 Before use, run the following commands from the terminal
 ```
 pip install pyDH
+pip install pycryptodome
 ```
 
 ## running the program
@@ -28,6 +29,20 @@ Requires that first char of message received be the sender's
 address so that server can send response to sender. The server only 
 accepts one user logged on at a time. Commands or login requests from
 users other than the currently logged on user will not be accepted.
+
+## data structures
+### session
+Stores two values: partner address and AES key
+
+### serverif
+Server interface. Stores its own address ('S'), the network path ('./network') and a session (defaults to None).
+When a user successfully logs in, a session is created and stored. Session stores partner's address (user address)
+and shared AES key.
+
+### user
+Client-side object. Created at login. Stores user's own address and a session.
+Session contains partner's address (server) and shared AES key.
+
 
 ## client.py
 Collects user input message and sends to server using netinterface.

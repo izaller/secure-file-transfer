@@ -7,6 +7,8 @@ import pyDH
 from Crypto.Protocol.KDF import HKDF
 from Crypto.Hash import SHA512
 from Crypto.Random import get_random_bytes
+from session import Session
+from user import User
 
 server = 'S'
 LOGIN_SUCCESS = '1'
@@ -69,7 +71,7 @@ def build_msg(addr, inp):
 def login(netif, addr):
     # input password in terminal
     password_accepted = False
-
+    user = User(addr)
     while not password_accepted:
         pswd = input('Enter password: ')
         # TODO: encrypt password with public key
@@ -118,6 +120,8 @@ def login(netif, addr):
             shared_key = dh.gen_shared_key(gymodp)
             AES_key = HKDF(shared_key.encode('utf-8'), 32, salt, SHA512, 1)
             print('AES_key', AES_key)
-            return True
 
+            # create session and return user
+            user.session = Session('S', AES_key)
+            return user
         print('Password incorrect. Please try again')

@@ -5,7 +5,7 @@
 
 import sys, os
 from netinterface import network_interface
-from client_ops import login, welcome, build_msg
+from client_interface import login, welcome, build_msg
 
 NET_PATH = './network'
 OWN_ADDR = input('Enter user address: ')
@@ -27,7 +27,8 @@ netif = network_interface(NET_PATH, OWN_ADDR)
 dst = 'S'   ## set destination to server
 
 ## login protocol
-if login(netif, OWN_ADDR):
+user = login(netif, OWN_ADDR)
+if user is not None:
     welcome(OWN_ADDR)
     while True:
         inp = input('Type a command: ')
