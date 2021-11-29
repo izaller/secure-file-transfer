@@ -67,6 +67,12 @@ def build_msg(addr, inp):
     cmd_code = commands[cmd]
     return addr + cmd_code + arg
 
+def public_encrypt(msg):
+    return msg
+
+def sign(msg, sqn):
+    return ''
+
 def login(netif, addr):
     # input password in terminal
     password_accepted = False
@@ -80,10 +86,10 @@ def login(netif, addr):
         # compute g^x mod p
         dh = pyDH.DiffieHellman()
         gxmodp = dh.gen_public_key()
-        msg = addr + commands['LOGIN'] + pswd + str(gxmodp)
-
+        msg = addr + commands['LOGIN'] + public_encrypt(pswd) + str(gxmodp)     # TODO: implement this function
         # TODO: sign message with MSN
-        sig = ''
+        sqn = ''
+        sig = sign(msg, sqn)
         msg = msg + sig
 
         # send login request

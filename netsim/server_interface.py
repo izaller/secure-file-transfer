@@ -6,6 +6,7 @@
 import pyDH
 from Crypto.Protocol.KDF import HKDF
 from Crypto.Hash import SHA512
+from Crypto.Cipher import AES
 from session import Session
 
 CORRECT_PASSWORD = '1'
@@ -25,37 +26,46 @@ LOGOUT = '9'
 PASSWORD = 'password'
 
 class Serverif:
-    addr = 'S'
-    path = './network'
+    addr = ''
+    path = ''
     session = None
 
-    def __init__(self):
-        pass
+    def __init__(self, addr, path):
+        self.addr = addr
+        self.path = path
 
     def process_msg(self, netif, status, msg):
-        # TODO: (actually) decode message
-        plain = msg.decode('utf-8')
+        # msg is received as byte string
+
+        # TODO:
+        ## decrypt w private key and route to login
+        if self.session is None:
+            self.session = login(netif, msg)
+            return
+
+        # TODO: decode message (byte string)
+        plainstr = decrypt(msg, self.session.key)
 
         # get sender
-        addr = plain[0]
+        addr = plainstr[0]
 
         # check server availability
         print('Checking server availability')
-        if self.session is not None and self.session.partner != addr:
+        if self.session.partner != addr:
             rsp = SERVER_UNAVAILABLE
             netif.send_msg(addr, rsp.encode('utf-8'))
             print('User ' + addr + ' tried to send message, but server is in session with user ' + self.session.partner)
 
         # get message command type and argument
-        cmd = str(plain[1])
+        cmd = str(plainstr[1])
 
-        if cmd == LOGIN:
-            print('Login request received for user ' + addr)
-            pswd = str(plain[2:10])
-            gxmodp = int(plain[10:])     # TODO: parse message and get g^x mod p
-            sig_u = ''  # TODO: authenticate sig (possibly before this in the function)
-            self.session = login(netif, addr, pswd, gxmodp)     # arg = password
-        elif cmd == MKD:
+        # if cmd == LOGIN:
+        #     print('Login request received for user ' + addr)
+        #     # pswd = str(plainstr[2:10])
+        #     # gxmodp = int(plainstr[10:])     # TODO: parse message and get g^x mod p
+        #     # sig_u = ''  # TODO: authenticate sig (possibly before this in the function)
+        #     # self.session = login(netif, addr, pswd, gxmodp)     # arg = password
+        if cmd == MKD:
             mkd()
         elif cmd == RMD:
             rmd()
@@ -74,11 +84,35 @@ class Serverif:
         elif cmd == LOGOUT:
             logout()
 
+def decrypt(msg, key):
+    # header = msg[slice:slice]
+    # nonce = msg[slice:slice]
+    # ciphertext = msg[slice:slice]
+    # tag = msg[slice:slice]
+
+    # cipher = AES.new(key, AES.MODE_GCM, nonce=nonce)
+    # cipher.update(header)
+    # plaintext = cipher.decrypt_and_verify(ciphertext, tag)
+    # return plaintext.decode('utf-8')
+    return msg.decode('utf-8')
+
+def public_decrypt(msg):
+    return msg
+
 # TODO: check hash
 def correct_password(addr, pswd):
     return pswd == PASSWORD
 
-def login(netif, addr, pswd, gxmodp):
+def login(netif, msg):
+    plainstr = public_decrypt(msg).decode('utf-8')
+
+    # parse message
+    addr = plainstr[0]
+    pswd = str(plainstr[2:10])
+    gxmodp = int(plainstr[10:])
+
+    sig_u = ''  # TODO: authenticate sig (possibly before this in the function)
+
     if correct_password(addr, pswd):    # check password
         # generate diffie-hellman parameters
         dh = pyDH.DiffieHellman()

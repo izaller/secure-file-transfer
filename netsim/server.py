@@ -25,7 +25,7 @@ if OWN_ADDR not in network_interface.addr_space:
     sys.exit(1)
 
 netif = network_interface(NET_PATH, OWN_ADDR)
-serverif = Serverif()
+serverif = Serverif(OWN_ADDR, NET_PATH)
 # status, msg = netif.receive_msg(blocking=True)  # when returns, status is True and msg contains a message
 
 print('Main loop started, quit with pressing CTRL-C...')
