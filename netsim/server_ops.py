@@ -86,7 +86,7 @@ def login(netif, addr, pswd, gxmodp):
         sig = ''        # TODO: sign -- sigS(addr | g^x mod p | S | g^y mod p)
 
         # response message: [correct password | g^y mod p | sigS(addr | g^x mod p | S | g^y mod p)]
-        ##                  12 bytes | 256 bytes | ??
+        ##                  12 bytes | 256 bytes | ?? ## TODO: pad passwords to uniform length
         rsp = CORRECT_PASSWORD + str(gymodp) + sig
         netif.send_msg(addr, rsp.encode('utf-8'))
 
