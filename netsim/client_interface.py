@@ -8,7 +8,6 @@ from Crypto.Protocol.KDF import HKDF
 from Crypto.Hash import SHA512
 from Crypto.Random import get_random_bytes
 from session import Session
-from user import User
 
 server = 'S'
 LOGIN_SUCCESS = '1'
