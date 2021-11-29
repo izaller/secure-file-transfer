@@ -3,7 +3,7 @@
 # file transfer
 ###-----------------------------------------------###
 
-LOGIN_SUCCESS = '1'
+CORRECT_PASSWORD = '1'
 LOGIN_FAILURE = '0'
 SERVER_UNAVAILABLE = 'X'
 
@@ -40,7 +40,10 @@ def process_msg(netif, status, msg, LOGGED_IN_USER):
 
     if cmd == LOGIN:
         print('Login request received for user ' + addr)
-        login(netif, addr, plain[2:])     # arg = password
+        pswd = plain[2:]
+        gxmodp = '' # TODO: parse message and get g^x mod p
+        sig_u = '' # TODO: authenticate sig (possibly before this in the function)
+        login(netif, addr, pswd, gxmodp)     # arg = password
     elif cmd == MKD:
         mkd()
     elif cmd == RMD:
@@ -69,10 +72,19 @@ def correct_password(addr, pswd):
     return pswd == PASSWORD
 
 
-def login(netif, addr, pswd):
-    if correct_password(addr, pswd):
-        rsp = LOGIN_SUCCESS
+def login(netif, addr, pswd, gxmodp):
+    if correct_password(addr, pswd):    # check password
+        # TODO: generate y
+        gymodp = ''     # TODO: compute g^y mod p
+        sig = ''        # TODO: sign -- sigS(addr | g^x mod p | S | g^y mod p)
+        rsp = CORRECT_PASSWORD + gymodp + sig
+        # response message: [correct password | g^y mod p | sigS(addr | g^x mod p | S | g^y mod p)]
         netif.send_msg(addr, rsp.encode('utf-8'))
+
+        # TODO: wait for final response from client
+        netif.receive_msg(blocking=True)
+        # TODO: authenticate all parameters
+        # TODO: generate session key from DH key and store
         print('User ' + addr + ' logged in')
     else:
         rsp = LOGIN_FAILURE

@@ -3,7 +3,7 @@
 # file transfer
 ###-----------------------------------------------###
 
-dst = 'S'
+server = 'S'
 LOGIN_SUCCESS = '1'
 SERVER_UNAVAILABLE = 'X'
 commands = {'LOGIN': '0',
@@ -67,13 +67,22 @@ def login(netif, addr):
 
     while not logged_in:
         pswd = input('Enter password: ')
-
+        # TODO: encrypt password
         # build login request
-        ## [address | login request | password]
-        msg = addr + commands['LOGIN'] + pswd
+        ## [address | login request | password | g^x mod p | sig(...)]
+        # TODO: choose x
+        x = ''
+        # TODO: compute g^x mod p
+        gxmodp = ''
+
+        msg = addr + commands['LOGIN'] + pswd + gxmodp
+
+        # TODO: sign message with MSN
+        sig = ''
+        msg = msg + sig
 
         # send login request
-        netif.send_msg(dst, msg.encode('utf-8'))
+        netif.send_msg(server, msg.encode('utf-8'))
 
         # TODO: set timer
         # wait for server response
@@ -84,7 +93,18 @@ def login(netif, addr):
         if login_response == SERVER_UNAVAILABLE:
             print('The server is currently unavailable. Please try again later.')
             break
+
+        # TODO: authenticate signature, parse message and get g^y mod p
+
+        # TODO: send final signed message w all DH parameters
+        ## msg_final = [U | sigU(addr | g^x mod p | S | g^y mod p)]
+        sig = ''
+        msg_final = addr + sig
+        netif.send_msg(server, msg_final.encode('utf-8'))
+
         # parse received message
         logged_in = (login_response == LOGIN_SUCCESS)
+
+        # TODO: generate session key from DH key and store
         if logged_in: return True
         print('Password incorrect. Please try again')

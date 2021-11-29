@@ -35,9 +35,9 @@ while True:
     print('message received')
     # decoded_msg = msg.decode('utf-8')
     LOGGED_IN_USER = process_msg(netif, status, msg, LOGGED_IN_USER)
-    # dst = decoded_msg[0]
+    # server = decoded_msg[0]
     # rsp = 'message received'
     # if status:
-    #     netif.send_msg(dst, rsp.encode('utf-8'))
+    #     netif.send_msg(server, rsp.encode('utf-8'))
     #     print('message sent')
 
