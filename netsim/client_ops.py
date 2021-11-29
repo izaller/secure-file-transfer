@@ -106,20 +106,18 @@ def login(netif, addr):
             # TODO: authenticate signature
 
             gymodp = int(rsp.decode('utf-8')[1:])
+            salt = get_random_bytes(16)
 
-            # TODO: send final signed message w all DH parameters
+            # TODO: sign message w all DH parameters and salt
             sig = ''
 
-            # TODO: msg_final = [U | salt | sigU(addr | g^x mod p | S | g^y mod p)]
-            salt = get_random_bytes(16)
-            print("salt", salt)
-            msg_final = addr + str(salt) + sig
-            netif.send_msg(server, msg_final.encode('utf-8'))
+            # msg_final = [U | salt | sigU(addr | g^x mod p | S | g^y mod p)]
+            msg_final = addr.encode('utf-8') + salt + sig.encode('utf-8')
+            netif.send_msg(server, msg_final)
 
             shared_key = dh.gen_shared_key(gymodp)
-            print(shared_key.encode('utf-8'))
             AES_key = HKDF(shared_key.encode('utf-8'), 32, salt, SHA512, 1)
-            print("AES", AES_key)
+            print('AES_key', AES_key)
             return True
 
         print('Password incorrect. Please try again')

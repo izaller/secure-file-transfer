@@ -92,14 +92,13 @@ def login(netif, addr, pswd, gxmodp):
 
         # wait for final response from client with salt
         status, rsp = netif.receive_msg(blocking=True)
-
-        salt = int(rsp.decode('utf-8')[1:17])
+        salt = rsp[1:17]
 
         # TODO: authenticate signature
         shared_key = dh.gen_shared_key(gxmodp)  # compute shared key
         # TODO: generate session key from DH key and store
-        AES_key = HKDF(shared_key, 32, salt, SHA512, 1)
-        print("AES", AES_key)
+        AES_key = HKDF(shared_key.encode('utf-8'), 32, salt, SHA512, 1)
+        print('AES_key', AES_key)
         print('User ' + addr + ' logged in')
     else:
         rsp = LOGIN_FAILURE
