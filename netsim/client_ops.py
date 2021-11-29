@@ -118,7 +118,7 @@ def login(netif, addr):
 
             shared_key = dh.gen_shared_key(gymodp)
             print(shared_key.encode('utf-8'))
-            AES_key = HKDF(shared_key, 32, salt, SHA512, 1)
+            AES_key = HKDF(shared_key.encode('utf-8'), 32, salt, SHA512, 1)
             print("AES", AES_key)
             return True
 
