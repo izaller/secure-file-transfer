@@ -3,6 +3,8 @@
 # file transfer
 ###-----------------------------------------------###
 
+import pyDH
+
 server = 'S'
 LOGIN_SUCCESS = '1'
 SERVER_UNAVAILABLE = 'X'
@@ -63,19 +65,21 @@ def build_msg(addr, inp):
 
 def login(netif, addr):
     # input password in terminal
-    logged_in = False
+    password_accepted = False
 
-    while not logged_in:
+    while not password_accepted:
         pswd = input('Enter password: ')
-        # TODO: encrypt password
+        # TODO: encrypt password with public key
         # build login request
         ## [address | login request | password | g^x mod p | sig(...)]
-        # TODO: choose x
-        x = ''
-        # TODO: compute g^x mod p
-        gxmodp = ''
+        ## one byte | one byte | 12 bytes | 256 bytes | ??
 
-        msg = addr + commands['LOGIN'] + pswd + gxmodp
+        # compute g^x mod p
+        dh = pyDH.DiffieHellman()
+        gxmodp = dh.gen_public_key()
+        print('gxmodp: ', gxmodp)
+
+        msg = addr + commands['LOGIN'] + pswd + str(gxmodp)
 
         # TODO: sign message with MSN
         sig = ''
@@ -87,24 +91,30 @@ def login(netif, addr):
         # TODO: set timer
         # wait for server response
         status, rsp = netif.receive_msg(blocking=True)
-
         # TODO: parse response message for accept/reject
-        login_response = rsp.decode('utf-8')
+        login_response = rsp.decode('utf-8')[0]     # get first byte
         if login_response == SERVER_UNAVAILABLE:
             print('The server is currently unavailable. Please try again later.')
             break
 
-        # TODO: authenticate signature, parse message and get g^y mod p
-
-        # TODO: send final signed message w all DH parameters
-        ## msg_final = [U | sigU(addr | g^x mod p | S | g^y mod p)]
-        sig = ''
-        msg_final = addr + sig
-        netif.send_msg(server, msg_final.encode('utf-8'))
-
         # parse received message
-        logged_in = (login_response == LOGIN_SUCCESS)
+        password_accepted = (login_response == LOGIN_SUCCESS)
 
-        # TODO: generate session key from DH key and store
-        if logged_in: return True
+        # generate session key from DH key and store
+        if password_accepted:
+            # TODO: authenticate signature
+
+            gymodp = int(rsp.decode('utf-8')[1:])
+
+            # TODO: send final signed message w all DH parameters
+            sig = ''
+
+            # TODO: msg_final = [U | sigU(addr | g^x mod p | S | g^y mod p)]
+            msg_final = addr + sig
+            netif.send_msg(server, msg_final.encode('utf-8'))
+
+            shared_key = dh.gen_shared_key(gymodp)
+            print(shared_key)
+            return True
+
         print('Password incorrect. Please try again')

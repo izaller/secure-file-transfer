@@ -3,6 +3,8 @@
 # file transfer
 ###-----------------------------------------------###
 
+import pyDH
+
 CORRECT_PASSWORD = '1'
 LOGIN_FAILURE = '0'
 SERVER_UNAVAILABLE = 'X'
@@ -36,13 +38,14 @@ def process_msg(netif, status, msg, LOGGED_IN_USER):
     LOGGED_IN_USER = addr
 
     # get message command type and argument
-    cmd = plain[1]
+    print("plain: ", plain)
+    cmd = str(plain[1])
 
     if cmd == LOGIN:
         print('Login request received for user ' + addr)
-        pswd = plain[2:]
-        gxmodp = '' # TODO: parse message and get g^x mod p
-        sig_u = '' # TODO: authenticate sig (possibly before this in the function)
+        pswd = str(plain[2:10])
+        gxmodp = int(plain[10:])     # TODO: parse message and get g^x mod p
+        sig_u = ''  # TODO: authenticate sig (possibly before this in the function)
         login(netif, addr, pswd, gxmodp)     # arg = password
     elif cmd == MKD:
         mkd()
@@ -74,16 +77,24 @@ def correct_password(addr, pswd):
 
 def login(netif, addr, pswd, gxmodp):
     if correct_password(addr, pswd):    # check password
-        # TODO: generate y
-        gymodp = ''     # TODO: compute g^y mod p
+
+        # generate diffie-hellman parameters
+        dh = pyDH.DiffieHellman()
+        gymodp = dh.gen_public_key()    # compute g^y mod p
+
         sig = ''        # TODO: sign -- sigS(addr | g^x mod p | S | g^y mod p)
-        rsp = CORRECT_PASSWORD + gymodp + sig
+
         # response message: [correct password | g^y mod p | sigS(addr | g^x mod p | S | g^y mod p)]
+        ##                  12 bytes | 256 bytes | ??
+        rsp = CORRECT_PASSWORD + str(gymodp) + sig
         netif.send_msg(addr, rsp.encode('utf-8'))
 
-        # TODO: wait for final response from client
+        # wait for final response from client
         netif.receive_msg(blocking=True)
-        # TODO: authenticate all parameters
+
+        # TODO: authenticate signature
+        shared_key = dh.gen_shared_key(gxmodp)  # compute shared key
+
         # TODO: generate session key from DH key and store
         print('User ' + addr + ' logged in')
     else:
