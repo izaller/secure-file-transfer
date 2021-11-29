@@ -1,6 +1,12 @@
 # secure-file-transfer
 project completed in fulfillment of requirements for Aquincum Institute of Technology's Applied Cryptography course.
 
+## required package installation
+Before use, run the following commands from the terminal
+```
+pip install pyDH
+```
+
 ## running the program
 
 use the following commands in separate terminal windows:
