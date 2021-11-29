@@ -71,7 +71,6 @@ def build_msg(addr, inp):
 def login(netif, addr):
     # input password in terminal
     password_accepted = False
-    user = User(addr)
     while not password_accepted:
         pswd = input('Enter password: ')
         # TODO: encrypt password with public key
@@ -122,6 +121,6 @@ def login(netif, addr):
             print('AES_key', AES_key)
 
             # create session and return user
-            user.session = Session('S', AES_key)
-            return user
+            session = Session('S', AES_key)
+            return session
         print('Password incorrect. Please try again')
