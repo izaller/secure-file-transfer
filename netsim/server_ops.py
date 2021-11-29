@@ -4,6 +4,8 @@
 ###-----------------------------------------------###
 
 import pyDH
+from Crypto.Protocol.KDF import HKDF
+from Crypto.Hash import SHA512
 
 CORRECT_PASSWORD = '1'
 LOGIN_FAILURE = '0'
@@ -38,7 +40,6 @@ def process_msg(netif, status, msg, LOGGED_IN_USER):
     LOGGED_IN_USER = addr
 
     # get message command type and argument
-    print("plain: ", plain)
     cmd = str(plain[1])
 
     if cmd == LOGIN:
@@ -89,13 +90,16 @@ def login(netif, addr, pswd, gxmodp):
         rsp = CORRECT_PASSWORD + str(gymodp) + sig
         netif.send_msg(addr, rsp.encode('utf-8'))
 
-        # wait for final response from client
-        netif.receive_msg(blocking=True)
+        # wait for final response from client with salt
+        status, rsp = netif.receive_msg(blocking=True)
+
+        salt = int(rsp.decode('utf-8')[1:17])
 
         # TODO: authenticate signature
         shared_key = dh.gen_shared_key(gxmodp)  # compute shared key
-
         # TODO: generate session key from DH key and store
+        AES_key = HKDF(shared_key, 32, salt, SHA512, 1)
+        print("AES", AES_key)
         print('User ' + addr + ' logged in')
     else:
         rsp = LOGIN_FAILURE

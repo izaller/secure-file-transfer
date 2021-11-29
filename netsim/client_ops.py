@@ -4,6 +4,9 @@
 ###-----------------------------------------------###
 
 import pyDH
+from Crypto.Protocol.KDF import HKDF
+from Crypto.Hash import SHA512
+from Crypto.Random import get_random_bytes
 
 server = 'S'
 LOGIN_SUCCESS = '1'
@@ -77,8 +80,6 @@ def login(netif, addr):
         # compute g^x mod p
         dh = pyDH.DiffieHellman()
         gxmodp = dh.gen_public_key()
-        print('gxmodp: ', gxmodp)
-
         msg = addr + commands['LOGIN'] + pswd + str(gxmodp)
 
         # TODO: sign message with MSN
@@ -109,12 +110,16 @@ def login(netif, addr):
             # TODO: send final signed message w all DH parameters
             sig = ''
 
-            # TODO: msg_final = [U | sigU(addr | g^x mod p | S | g^y mod p)]
-            msg_final = addr + sig
+            # TODO: msg_final = [U | salt | sigU(addr | g^x mod p | S | g^y mod p)]
+            salt = get_random_bytes(16)
+            print("salt", salt)
+            msg_final = addr + str(salt) + sig
             netif.send_msg(server, msg_final.encode('utf-8'))
 
             shared_key = dh.gen_shared_key(gymodp)
-            print(shared_key)
+            print(shared_key.encode('utf-8'))
+            AES_key = HKDF(shared_key, 32, salt, SHA512, 1)
+            print("AES", AES_key)
             return True
 
         print('Password incorrect. Please try again')
