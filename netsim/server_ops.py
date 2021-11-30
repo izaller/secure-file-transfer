@@ -123,7 +123,7 @@ def login(netif, addr, pswd, gxmodp):
         # TODO: authenticate signature
         shared_key = dh.gen_shared_key(gxmodp)  # compute shared key
         # TODO: generate session key from DH key and store
-        AES_key = HKDF(shared_key, 32, salt, SHA512, 1)
+        AES_key = HKDF(shared_key.encode('utf-8'), 32, salt, SHA512, 1)
         print("AES", AES_key)
         print('User ' + addr + ' logged in')
     else:
