@@ -6,9 +6,11 @@ import os
 import sys
 
 from netinterface import network_interface
+from server_interface import Serverif
 
 NET_PATH = './network'
 OWN_ADDR = 'S'
+LOGGED_IN_USER = None
 
 if (NET_PATH[-1] != '/') and (NET_PATH[-1] != '\\'): NET_PATH += '/'
 
@@ -23,17 +25,19 @@ if OWN_ADDR not in network_interface.addr_space:
     sys.exit(1)
 
 netif = network_interface(NET_PATH, OWN_ADDR)
-
+serverif = Serverif(OWN_ADDR, NET_PATH)
 # status, msg = netif.receive_msg(blocking=True)  # when returns, status is True and msg contains a message
 
 print('Main loop started, quit with pressing CTRL-C...')
 while True:
+    # wait for message
     status, msg = netif.receive_msg(blocking=True)  # when returns, status is True and msg contains a message
     print('message received')
-    decoded_msg = msg.decode('utf-8')
-    dst = decoded_msg[0]
-    rsp = 'message received'
-    if status:
-        netif.send_msg(dst, rsp.encode('utf-8'))
-        print('message sent')
+    # decoded_msg = msg.decode('utf-8')
+    serverif.process_msg(netif, status, msg)
+    # server = decoded_msg[0]
+    # rsp = 'message received'
+    # if status:
+    #     netif.send_msg(server, rsp.encode('utf-8'))
+    #     print('message sent')
 
