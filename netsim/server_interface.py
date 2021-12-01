@@ -45,8 +45,7 @@ class Serverif:
     def process_msg(self, netif, status, msg):
         # msg is received as byte string
 
-        # TODO:
-        ## decrypt w private key and route to login
+        ## route to login TODO: fix for stop server while client is still running
         if self.session is None:
             self.session = login(netif, msg)
             return
@@ -63,16 +62,18 @@ class Serverif:
             rsp = SERVER_UNAVAILABLE
             netif.send_msg(addr, rsp.encode('utf-8'))
             print('User ' + addr + ' tried to send message, but server is in session with user ' + self.session.partner)
+            return
         print('Server available.')
         # get message command type and argument
         cmd = str(plainstr[1])
 
-        # if cmd == LOGIN:
-        #     print('Login request received for user ' + addr)
-        #     # pswd = str(plainstr[2:10])
-        #     # gxmodp = int(plainstr[10:])     # TODO: parse message and get g^x mod p
-        #     # sig_u = ''  # TODO: authenticate sig (possibly before this in the function)
-        #     # self.session = login(netif, addr, pswd, gxmodp)     # arg = password
+        if cmd == LOGIN:
+            print('Login request received for user ' + addr)
+            login(netif, msg)
+            # pswd = str(plainstr[2:10])
+            # gxmodp = int(plainstr[10:])     # TODO: parse message and get g^x mod p
+            # sig_u = ''  # TODO: authenticate sig (possibly before this in the function)
+            # self.session = login(netif, addr, pswd, gxmodp)     # arg = password
         if cmd == MKD:
             mkd()
         elif cmd == RMD:
@@ -90,6 +91,7 @@ class Serverif:
         elif cmd == RMF:
             rmf()
         elif cmd == LOGOUT:
+            # self.session = logout()
             logout()
 
 def decrypt(msg, key):
@@ -205,3 +207,4 @@ def rmf():
 # TODO: implement
 def logout():
     print('LOGOUT operation not yet implemented')
+    # return None
