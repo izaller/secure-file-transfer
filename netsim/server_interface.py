@@ -97,13 +97,13 @@ class Serverif:
             # self.wd = cwd(self.wd, self.session.key, arg)
             rsp_code = cwd()
         elif cmd == LST:
-            rsp_code = lst()
+            rsp_code = lst(self.wd, arg)
         elif cmd == UPL:
             rsp_code = upl()
         elif cmd == DNL:
             rsp_code = dnl()
         elif cmd == RMF:
-            rsp_code = rmf()
+            rsp_code = rmf(self.wd, arg)
         elif cmd == LOGOUT:
             # self.session = logout()
             # need to set session to None and wd to ''
@@ -190,9 +190,11 @@ def cwd():
     print('CWD operation not yet implemented')
     return FAILURE
 
-# TODO: implement
-def lst():
-    os.listdir()
+# TODO: send list back to client
+def lst(wd, dirname):
+    if os.path.exists(wd + dirname):
+        print(os.listdir(wd + dirname))
+        # return SUCCESS
     print('LST operation not yet implemented')
     return FAILURE
 
@@ -206,9 +208,10 @@ def dnl():
     print('DNL operation not yet implemented')
     return FAILURE
 
-# TODO: implement
-def rmf():
-    print('RMF operation not yet implemented')
+def rmf(wd, fname):
+    if os.path.exists(wd + fname):
+        os.remove(wd + fname)
+        return SUCCESS
     return FAILURE
 
 # TODO: implement
