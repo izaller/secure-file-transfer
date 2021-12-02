@@ -52,6 +52,7 @@ if user.session is not None:
 
         # wait for response
         status, rsp = netif.receive_msg(blocking=True)  # when returns, status is True and msg contains a message
+
         # check sqn_rsp > user.session.sqn_rcv (in header, don't need to decrypt)
         sqn_rsp = int.from_bytes(rsp[17:21], byteorder='big')
         if check_sqn(user.session.sqn_rcv, sqn_rsp):
@@ -63,9 +64,9 @@ if user.session is not None:
 
             # check success/failure code
             if rsp_code == SUCCESS:
-                print('command success')
+                print('Command successfully executed')
             else:
-                print('unable to complete command')
+                print('Unable to complete command')
         # print success/failure message
         else:
             print('message sequence number not accepted')

@@ -8,7 +8,6 @@ import os
 import pyDH
 from Crypto.Protocol.KDF import HKDF
 from Crypto.Hash import SHA512
-from Crypto.Cipher import AES
 from Crypto.Cipher import PKCS1_OAEP
 from Crypto.PublicKey import RSA
 from Crypto.Signature import PKCS1_PSS
@@ -85,10 +84,6 @@ class Serverif:
         if cmd == LOGIN:
             print('Login request received for user ' + addr)
             login(netif, msg)
-            # pswd = str(plainstr[2:10])
-            # gxmodp = int(plainstr[10:])     # TODO: parse message and get g^x mod p
-            # sig_u = ''  # TODO: authenticate sig (possibly before this in the function)
-            # self.session = login(netif, addr, pswd, gxmodp)     # arg = password
             return
 
         rsp_code = FAILURE
@@ -97,22 +92,22 @@ class Serverif:
         elif cmd == RMD:
             rsp_code = rmd(self.wd, arg)
         elif cmd == GWD:
-            gwd(self.wd)
+            rsp_code = gwd(self.wd)
         elif cmd == CWD:
             # self.wd = cwd(self.wd, self.session.key, arg)
-            cwd()
+            rsp_code = cwd()
         elif cmd == LST:
-            lst()
+            rsp_code = lst()
         elif cmd == UPL:
-            upl()
+            rsp_code = upl()
         elif cmd == DNL:
-            dnl()
+            rsp_code = dnl()
         elif cmd == RMF:
-            rmf()
+            rsp_code = rmf()
         elif cmd == LOGOUT:
             # self.session = logout()
             # need to set session to None and wd to ''
-            logout()
+            rsp_code = logout()
 
         rsp = build_msg(addr, self.session, rsp_code)
         netif.send_msg(addr, rsp)
@@ -188,29 +183,36 @@ def rmd(wd, dirname):
 def gwd(wd):
     # send wd to client
     print('GWD operation not yet implemented')
+    return FAILURE
 
 # TODO: implement
 def cwd():
     print('CWD operation not yet implemented')
+    return FAILURE
 
 # TODO: implement
 def lst():
     os.listdir()
     print('LST operation not yet implemented')
+    return FAILURE
 
 # TODO: implement
 def upl():
     print('UPL operation not yet implemented')
+    return FAILURE
 
 # TODO: implement
 def dnl():
     print('DNL operation not yet implemented')
+    return FAILURE
 
 # TODO: implement
 def rmf():
     print('RMF operation not yet implemented')
+    return FAILURE
 
 # TODO: implement
 def logout():
     print('LOGOUT operation not yet implemented')
+    return FAILURE
     # return None
