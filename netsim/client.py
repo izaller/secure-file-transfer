@@ -5,7 +5,7 @@
 
 import sys, os
 from netinterface import network_interface
-from client_interface import login, welcome, build_msg
+from client_interface import login, welcome, build_msg, process_input
 from user import User
 from aes_ops import check_sqn, decrypt
 
@@ -36,15 +36,19 @@ user.session = login(netif, OWN_ADDR)
 if user.session is not None:
     welcome(user.addr)
     while True:
+        # user.session.print()
         inp = input('Type a command: ')
 
+        cmd, arg = process_input(inp)
+        if cmd is None:
+            continue
+
         # build message based on input
-        msg = build_msg(user.addr, user.session, inp)
+        msg = build_msg(user.addr, user.session, cmd, arg)
 
         # send message
-        if msg is not None:
-            netif.send_msg(dst, msg)
-            user.session.sqn_snd += 1
+        netif.send_msg(dst, msg)
+        user.session.sqn_snd += 1
 
         # wait for response
         status, rsp = netif.receive_msg(blocking=True)  # when returns, status is True and msg contains a message

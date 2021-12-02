@@ -31,10 +31,12 @@ serverif = Serverif(OWN_ADDR, NET_PATH)
 print('Main loop started, quit with pressing CTRL-C...')
 while True:
     # wait for message
+    if serverif.session is not None:
+        serverif.session.print()
     status, msg = netif.receive_msg(blocking=True)  # when returns, status is True and msg contains a message
-    print('message received')
     # decoded_msg = msg.decode('utf-8')
     serverif.process_msg(netif, status, msg)
+
     # server = decoded_msg[0]
     # rsp = 'message received'
     # if status:

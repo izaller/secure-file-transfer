@@ -44,22 +44,18 @@ def welcome(addr):
     print(' RMF [filename]      --delete the file named filename from the current directory')
     print(' LOGOUT              --log off from the server')
 
-# build message to server from user input
-def build_msg(addr, session, inp):
-
+def process_input(inp):
     split = inp.split()
     if len(split) > 2:
         print('Too many arguments: ' + inp + ' is not a valid command input.')
-        return None
+        return None, None
 
     # check input validity
     cmd = split[0].upper()
     if cmd not in commands.keys():
         print(cmd + ' is not a valid command.')
-        return None
+        return None, None
 
-    arg = ''
-    ## check for necessary arguments
     if cmd != 'GWD' and cmd != 'LOGOUT':
         if len(split) == 1:
             argname = 'dirname'
@@ -68,12 +64,19 @@ def build_msg(addr, session, inp):
             elif cmd == 'DNL' or cmd == 'RMF':
                 argname = 'filename'
             print(cmd + ' requires argument: ' + argname)
-            return None
+            return None, None
         arg = split[1]
+    else: arg = ''
+
+    return cmd, arg
+
+# build message to server from user input
+def build_msg(addr, session, cmd, arg):
 
     cmd_code = commands[cmd]
 
-    header = addr.encode('utf-8') + session.sqn_snd.to_bytes(length=4, byteorder='big')   # header: addr + msn (5 bytes)
+    # send header w sqn + 1
+    header = addr.encode('utf-8') + (session.sqn_snd + 1).to_bytes(length=4, byteorder='big')   # header: addr + msn (5 bytes)
     plaintext = cmd_code.encode('utf-8') + arg.encode('utf-8')  # encrypted content: cmd + arg
 
     return encrypt(session.key, header, plaintext)

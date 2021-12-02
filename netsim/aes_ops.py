@@ -19,7 +19,7 @@ def decrypt(msg, key):
     if len(plaintext) == 1:
         arg = None
     else:
-        arg = plaintext[1:]
+        arg = plaintext[1:].decode('utf-8')
 
     return addr, cmd, arg
 
