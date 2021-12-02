@@ -1,3 +1,7 @@
+###-----------------------------------------------###
+# implementation of encryption operations for secure
+# file transfer
+###-----------------------------------------------###
 
 from Crypto.Cipher import AES
 
