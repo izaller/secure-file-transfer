@@ -95,7 +95,7 @@ class Serverif:
         if cmd == MKD:
             rsp_code = mkd(self.wd, arg)
         elif cmd == RMD:
-            rmd(self.wd, arg)
+            rsp_code = rmd(self.wd, arg)
         elif cmd == GWD:
             gwd(self.wd)
         elif cmd == CWD:
@@ -176,18 +176,13 @@ def mkd(wd, dirname):
     else:
         return FAILURE
 
-# TODO: implement
 def rmd(wd, dirname):
-    print(wd)
-    print(dirname)
+    if dirname == '.': return FAILURE
     if os.path.exists(wd + dirname):
         os.rmdir(wd + dirname)
+        return SUCCESS
     else:
-        pass
-        # TODO: send dirname doesn't exist
-    # TODO: update sqn_snd
-
-    print('RMD operation not yet implemented')
+        return FAILURE
 
 # TODO: implement
 def gwd(wd):
