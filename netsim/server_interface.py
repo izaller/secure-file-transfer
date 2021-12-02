@@ -3,6 +3,8 @@
 # file transfer
 ###-----------------------------------------------###
 
+import os
+
 import pyDH
 from Crypto.Protocol.KDF import HKDF
 from Crypto.Hash import SHA512
@@ -10,6 +12,7 @@ from Crypto.Cipher import AES
 from Crypto.Cipher import PKCS1_OAEP
 from Crypto.PublicKey import RSA
 from Crypto.Signature import PKCS1_PSS
+from aes_ops import *
 
 from session import Session
 
@@ -17,8 +20,8 @@ RSA_PUBLIC_KEY = '-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMI
 RSA_PRIVATE_KEY = '-----BEGIN RSA PRIVATE KEY-----\n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\n-----END RSA PRIVATE KEY-----'
 RSA_BLOCK_SIZE = 512  # using 4096 when generating key
 
-CORRECT_PASSWORD = '1'
-LOGIN_FAILURE = '0'
+SUCCESS = '1'
+FAILURE = '0'
 SERVER_UNAVAILABLE = 'X'
 
 LOGIN = '0'
@@ -33,10 +36,13 @@ RMF = '8'
 LOGOUT = '9'
 PASSWORD = 'password'
 
+SERVER = './server/'
+
 class Serverif:
     addr = ''
     path = ''
     session = None
+    wd = ''
 
     def __init__(self, addr, path):
         self.addr = addr
@@ -48,25 +54,29 @@ class Serverif:
         ## route to login TODO: fix for stop server while client is still running
         if self.session is None:
             self.session = login(netif, msg)
+            self.session.sqn_rcv += 1
+            self.wd = SERVER + chr(msg[0]) + '/'
             return
 
-        # TODO: decode message (byte string)
-        plainstr = decrypt(msg, self.session.key)
+        # msg stucture: nonce (16 bytes) + header (5 bytes) + message (cmd = 1 byte + optional arg) + tag (16 bytes)
+        # header = one byte addr + four bytes sqn
+        sqn = int.from_bytes(msg[17:21], byteorder='big')
+        if not check_sqn(self.session.sqn_rcv, sqn):
+            print("Message decryption error")
+            return
 
-        # get sender
-        addr = chr(plainstr[0])
+        addr, cmd, arg = decrypt(msg, self.session.key)
+        self.session.sqn_rcv = sqn  # update sqn_rcv to the value of the received sqn after successful decryption
 
         # check server availability
         print('Checking server availability')
         if self.session.partner != addr:
-            rsp = SERVER_UNAVAILABLE
-            netif.send_msg(addr, rsp.encode('utf-8'))
+            rsp = build_msg(addr, self.session, SERVER_UNAVAILABLE)
+            netif.send_msg(addr, rsp)
+            self.session.sqn_snd += 1   # update sqn_snd
             print('User ' + addr + ' tried to send message, but server is in session with user ' + self.session.partner)
             return
         print('Server available.')
-
-        # get message command type and argument
-        cmd = chr(plainstr[1])
 
         if cmd == LOGIN:
             print('Login request received for user ' + addr)
@@ -76,12 +86,16 @@ class Serverif:
             # sig_u = ''  # TODO: authenticate sig (possibly before this in the function)
             # self.session = login(netif, addr, pswd, gxmodp)     # arg = password
         if cmd == MKD:
-            mkd()
+            rsp_code = mkd(self.wd, self.session.key, arg)
+            rsp = build_msg(addr, self.session, rsp_code)
+            netif.send_msg(addr, rsp)
+            self.session.sqn_snd += 1
         elif cmd == RMD:
-            rmd()
+            rmd(self.wd, self.session.key, arg)
         elif cmd == GWD:
-            gwd()
+            gwd(self.wd, self.session.key)
         elif cmd == CWD:
+            # self.wd = cwd(self.wd, self.session.key, arg)
             cwd()
         elif cmd == LST:
             lst()
@@ -93,19 +107,13 @@ class Serverif:
             rmf()
         elif cmd == LOGOUT:
             # self.session = logout()
+            # need to set session to None and wd to ''
             logout()
 
-def decrypt(msg, key):
-    # header = msg[slice:slice]
-    # nonce = msg[slice:slice]
-    # ciphertext = msg[slice:slice]
-    # tag = msg[slice:slice]
-
-    # cipher = AES.new(key, AES.MODE_GCM, nonce=nonce)
-    # cipher.update(header)
-    # plaintext = cipher.decrypt_and_verify(ciphertext, tag)
-    # return plaintext.decode('utf-8')
-    return msg
+def build_msg(addr, session, rsp_code):
+    header = addr.encode('utf-8') + session.sqn_snd.to_bytes(length=4, byteorder='big')  # header: addr + msn (5 bytes)
+    plaintext = rsp_code.encode('utf-8')
+    return encrypt(session.key, header, plaintext)
 
 # TODO: check hash
 def correct_password(addr, pswd):
@@ -139,7 +147,7 @@ def login(netif, msg):
 
         # response message: [correct password | g^y mod p | sigS(addr | g^x mod p | S | g^y mod p)]
         ##                  12 bytes | 256 bytes | ??
-        rsp = CORRECT_PASSWORD.encode('utf-8') + gymodp.to_bytes(length=256, byteorder='big') + sig
+        rsp = SUCCESS.encode('utf-8') + gymodp.to_bytes(length=256, byteorder='big') + sig
         netif.send_msg(addr, rsp)
 
         # generate shared key from Diffie-Hellman parameters
@@ -151,20 +159,40 @@ def login(netif, msg):
         print('User ' + addr + ' logged in')
         return Session(addr, AES_key)
     else:
-        rsp = LOGIN_FAILURE
+        rsp = FAILURE
         netif.send_msg(addr, rsp.encode('utf-8'))
         return None
 
 # TODO: implement
-def mkd():
-    print('MKD operation not yet implemented')
+def mkd(wd, key, dirname):
+    print(wd)
+    print(dirname)
+    if not os.path.exists(wd + dirname):
+        os.mkdir(wd + dirname)
+        return SUCCESS.encode('utf-8')
+        # TODO: send success message to client
+        # TODO: update sqn_snd
+    else:
+        return FAILURE.encode('utf-8')
+    #     pass
+    # print('MKD operation not yet fully implemented')
 
 # TODO: implement
-def rmd():
+def rmd(wd, key, dirname):
+    print(wd)
+    print(dirname)
+    if os.path.exists(wd + dirname):
+        os.rmdir(wd + dirname)
+    else:
+        pass
+        # TODO: send dirname doesn't exist
+    # TODO: update sqn_snd
+
     print('RMD operation not yet implemented')
 
 # TODO: implement
-def gwd():
+def gwd(wd, key):
+    # send wd to client
     print('GWD operation not yet implemented')
 
 # TODO: implement
@@ -173,6 +201,7 @@ def cwd():
 
 # TODO: implement
 def lst():
+    os.listdir()
     print('LST operation not yet implemented')
 
 # TODO: implement

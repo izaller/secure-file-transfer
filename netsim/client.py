@@ -7,6 +7,10 @@ import sys, os
 from netinterface import network_interface
 from client_interface import login, welcome, build_msg
 from user import User
+from aes_ops import check_sqn, decrypt
+
+SUCCESS = '1'
+FAILURE = '0'
 
 NET_PATH = './network'
 OWN_ADDR = input('Enter user address: ')
@@ -33,11 +37,31 @@ if user.session is not None:
     welcome(user.addr)
     while True:
         inp = input('Type a command: ')
-        msg = build_msg(user.addr, inp)
+
+        # build message based on input
+        msg = build_msg(user.addr, user.session, inp)
+
+        # send message
         if msg is not None:
-            netif.send_msg(dst, msg.encode('utf-8'))
+            netif.send_msg(dst, msg)
+            user.session.sqn_snd += 1
 
-        # status, rsp = netif.receive_msg(blocking=True)  # when returns, status is True and msg contains a message
-        # print(rsp.decode('utf-8'))
+        # wait for response
+        status, rsp = netif.receive_msg(blocking=True)  # when returns, status is True and msg contains a message
+        # check sqn_rsp > user.session.sqn_rcv (in header, don't need to decrypt)
+        sqn_rsp = int.from_bytes(rsp[17:21], byteorder='big')
+        if check_sqn(user.session.sqn_rcv, sqn_rsp):
+            # decrypt rsp
+            addr, rsp_code, arg = decrypt(rsp, user.session.key)   # we don't care about addr (S) or arg (should be empty string)
 
-        # if input('Continue? (y/n): ') == 'n': break
+            # set user.session.rsp = sqn_rsp
+            user.session.sqn_rcv = sqn_rsp
+
+            # check success/failure code
+            if rsp_code == SUCCESS:
+                print('command success')
+            else:
+                print('unable to complete command')
+        # print success/failure message
+        else:
+            print('message sequence number not accepted')
