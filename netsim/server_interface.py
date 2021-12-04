@@ -105,13 +105,15 @@ class Serverif:
         elif cmd == RMF:
             rsp_code = rmf(self.wd, arg)
         elif cmd == LOGOUT:
-            # self.session = logout()
-            # need to set session to None and wd to ''
             rsp_code = logout()
 
         rsp = build_msg(addr, self.session, rsp_code)
         netif.send_msg(addr, rsp)
         self.session.sqn_snd += 1
+
+        if cmd == LOGOUT:
+            self.session = None
+            self.wd = ''
 
 def build_msg(addr, session, rsp_code):
     header = addr.encode('utf-8') + (session.sqn_snd + 1).to_bytes(length=4, byteorder='big')  # header: addr + msn (5 bytes)
@@ -214,8 +216,5 @@ def rmf(wd, fname):
         return SUCCESS
     return FAILURE
 
-# TODO: implement
 def logout():
-    print('LOGOUT operation not yet implemented')
-    return FAILURE
-    # return None
+    return SUCCESS

@@ -64,6 +64,10 @@ if user.session is not None:
 
             # check success/failure code
             if rsp_code == SUCCESS:
+                print(cmd)
+                if cmd == 'LOGOUT':
+                    print('Logout success. Goodbye.')
+                    quit()
                 print('Command successfully executed')
             else:
                 print('Unable to complete command')

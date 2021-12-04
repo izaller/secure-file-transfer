@@ -33,5 +33,3 @@ while True:
     # wait for message
     status, msg = netif.receive_msg(blocking=True)  # when returns, status is True and msg contains a message
     serverif.process_msg(netif, status, msg)
-
-
