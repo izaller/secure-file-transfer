@@ -185,22 +185,18 @@ def gwd(wd):
     # send wd to client
     return SUCCESS + wd.encode('utf-8')
 
-# TODO: implement -- backwards/forwards functionality
 # Works backwords/forwards if client inputs complete pathname, eg: ./server/U/dirname 
 def cwd(wd, dirname):
-    # if os.path.exists(wd + dirname):
-    #     return wd + dirname, SUCCESS
     if os.path.exists(dirname):
         return dirname, SUCCESS
-    # print('CWD operation not yet implemented')
     return wd, FAILURE
 
 def lst(wd, dirname):
     if os.path.exists(wd + dirname):
-        files = '\n'
+        files = '   '
         for r in os.listdir(wd + dirname):
-            files += r + '\n'
-        return SUCCESS + files.encode('utf-8')
+            files += r + '  '
+        return SUCCESS + files.encode('utf-8')[:-2]
     return FAILURE
 
 # TODO: implement

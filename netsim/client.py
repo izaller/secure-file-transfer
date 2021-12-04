@@ -66,7 +66,6 @@ if user.session is not None:
             if rsp_code == SUCCESS:
                 if arg is not None:
                     print(arg)
-                print('Command successfully executed')
             else:
                 print('Unable to complete command')
         # print success/failure message
