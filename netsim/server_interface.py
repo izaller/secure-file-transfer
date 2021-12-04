@@ -111,7 +111,6 @@ class Serverif:
             # need to set session to None and wd to ''
             rsp_plain = logout()
 
-        print(rsp_plain)
         rsp = build_msg(addr, self.session, rsp_plain)
         netif.send_msg(addr, rsp)
         self.session.sqn_snd += 1
@@ -195,7 +194,6 @@ def cwd(wd, dirname):
 
 def lst(wd, dirname):
     if os.path.exists(wd + dirname):
-        print(os.listdir(wd + dirname))
         files = '\n'
         for r in os.listdir(wd + dirname):
             files += r + '\n'
