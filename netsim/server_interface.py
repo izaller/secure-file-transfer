@@ -97,11 +97,11 @@ class Serverif:
             rsp_plain = gwd(self.wd)
         elif cmd == CWD:
             # self.wd = cwd(self.wd, self.session.key, arg)
-            self.wd, rsp_plain = cwd(self.wd, arg)
+            self.wd, rsp_plain = cwd(self.root, self.wd, arg)
         elif cmd == LST:
             rsp_plain = lst(self.wd, arg)
         elif cmd == UPL:
-            rsp_plain = upl()
+            rsp_plain = upl(self.wd, arg)
         elif cmd == DNL:
             rsp_plain = dnl(self.wd, arg)
         elif cmd == RMF:
@@ -186,7 +186,9 @@ def gwd(wd):
     return SUCCESS + wd.encode('utf-8')
 
 # Works backwords/forwards if client inputs complete pathname, eg: ./server/U/dirname 
-def cwd(wd, dirname):
+def cwd(root, wd, dirname):
+    if dirname[:12] != root:
+        return wd, FAILURE
     if os.path.exists(dirname):
         return dirname, SUCCESS
     return wd, FAILURE
@@ -199,10 +201,12 @@ def lst(wd, dirname):
         return SUCCESS + files.encode('utf-8')[:-2]
     return FAILURE
 
-# TODO: implement
-def upl():
-    print('UPL operation not yet implemented')
-    return FAILURE
+def upl(wd, arg):
+    fname = arg[:arg.index('\n')]
+    msg = arg[len(fname) + 1:].encode('utf-8')
+    fname = fname[fname.rfind('/') + 1:]
+    with open(wd + '/' + fname, 'wb') as f: f.write(msg)
+    return SUCCESS
 
 def dnl(wd, fname):
     if os.path.exists(wd + fname):
