@@ -120,6 +120,8 @@ def build_msg(addr, session, arg):
     return encrypt(session.key, header, arg)
 
 # TODO: check hash
+## read in password hash for the given address
+## hash pswd and check for equality
 def correct_password(addr, pswd):
     keypair = RSA.import_key(RSA_PRIVATE_KEY)
     cipher = PKCS1_OAEP.new(keypair)
