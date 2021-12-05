@@ -45,6 +45,9 @@ if user.session is not None:
 
         # build message based on input
         msg = build_msg(user.addr, user.session, cmd, arg)
+        if cmd == 'UPL' and msg is None:
+            print('Invalid filename')
+            continue
 
         # send message
         netif.send_msg(dst, msg)
