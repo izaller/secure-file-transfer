@@ -110,7 +110,8 @@ make directory with name dirname on the server
 ### RMD
 ```RMD [dirname]```
  remove directory with name dirname from the server.
- 
+
+ User must be in ./server/U/ before deleting a directory.
  If directory is nonempty, also deletes all files within the directory from the server
 
 ### GWD
