@@ -55,7 +55,7 @@ class Serverif:
     def process_msg(self, netif, status, msg):
         # msg is received as byte string
 
-        ## route to login TODO: fix for stop server while client is still running
+        ## route to login
         if self.session is None:
             self.session = login(netif, msg)
             self.wd = SERVER + chr(msg[0]) + '/'
@@ -100,7 +100,6 @@ class Serverif:
         elif cmd == GWD:
             rsp_plain = gwd(self.wd)
         elif cmd == CWD:
-            # self.wd = cwd(self.wd, self.session.key, arg)
             self.wd, rsp_plain = cwd(self.root, self.wd, arg)
         elif cmd == LST:
             rsp_plain = lst(self.wd, arg)
@@ -217,7 +216,7 @@ def gwd(wd):
 
 # Works backwords/forwards if client inputs complete pathname, eg: ./server/U/dirname
 def cwd(root, wd, dirname):
-    if dirname[:12] != root:
+    if dirname[:11] != root:
         return wd, FAILURE
     if os.path.exists(dirname):
         return dirname, SUCCESS

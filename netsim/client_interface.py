@@ -34,7 +34,8 @@ def welcome(addr):
     print(' MKD [dirname]       --make directory with name dirname on the server')
     print(' RMD [dirname]       --remove directory with name dirname from the server')
     print(' GWD                 --print the name of the current working directory')
-    print(' CWD [dirname]       --change the current directory to the directory named dirname')
+    print(' CWD [dirname]       --change the current directory to the directory named dirname,\n'
+          '                       where dirname includes the path from the root (./server/ + user address)')
     print(' LST [dirname]       --list the contents of the directory on the server named dirname')
     print(' UPL [path to file]  --upload the file located at the input file path to the\n'
           '                       current working directory on the server')
