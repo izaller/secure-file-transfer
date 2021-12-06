@@ -12,6 +12,7 @@ from Crypto.Cipher import PKCS1_OAEP
 from Crypto.PublicKey import RSA
 from Crypto.Signature import PKCS1_PSS
 from aes_ops import encrypt
+import os
 
 # server's public key
 # RSA_PUBLIC_KEY = '-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA2KLWOGq+DKVqRaDqFzyk\n4oF37h/BnJsNJrK03id3x7KdFqv6Fzx3pptX7LJW3B5ECmQqG5tUhR7x+SLsIbNv\nWokruHVe8t8S0Y84Lg4eAbqu04+51wtgbX9wHQXHRaurSZn6LbFoZynPjvoaAAFW\nOPGDsnGYMFmZPRkUuk06q0/3hak8Rg1HGY1PDrVF54VSZ1w/Obj0n7WALFCHjtir\nk8aKQUfrS1+WVpqCz2HDtKUfJl4r4Tqs/abZwrsN5S4vpqy9MplBnnin2TUviRpi\n1Qpjsl2kT8MD0hUd8aX+qEy8aCn8NahztTyICQsfYDsBpZAVK5W12bJkqjAHUCA+\nGNTnUWBcujg1cApzOT/0p0AW/W0DNFoho1jyLhRj5FXTo+pTshweUceldjkZePwn\nT3b7LecvX42V35OELC0wsY/2t46PfKJKRHHxiAoBVrmxdhYJCEsSWAZ34Pzw+nQ8\nA5pXVHJLs7LWmFjWatyNhDRNhzEcRIKLv5OXEcDaqRaR3PXAz0JhsrQfenicJksZ\nMpb2ygdZFE2HoYgSkZvcRl2FOvoD7zFEFw5kTB34lcuVt6CzJ1O3M24X9qzLUP+Y\nTmANypBbMs8w+GlaUrD9T76C8oyyOxBH7QCisf2StUMwg1+V4W8LjGD4HFXP77bv\nHlgEe5RKf3cub7hWlQRGgWcCAwEAAQ==\n-----END PUBLIC KEY-----'
@@ -72,8 +73,14 @@ def process_input(inp):
 
 # build message to server from user input
 def build_msg(addr, session, cmd, arg):
-
     cmd_code = commands[cmd]
+
+    if cmd == 'UPL':
+        fname = arg
+        if os.path.exists(fname):
+            f = open(fname, 'r').read()
+            arg = fname + '\n' + f
+        else: return None
 
     # send header w sqn + 1
     header = addr.encode('utf-8') + (session.sqn_snd + 1).to_bytes(length=4, byteorder='big')   # header: addr + msn (5 bytes)

@@ -42,6 +42,7 @@ class Serverif:
     path = ''
     session = None
     wd = ''
+    root = ''
 
     def __init__(self, addr, path):
         self.addr = addr
@@ -54,6 +55,7 @@ class Serverif:
         if self.session is None:
             self.session = login(netif, msg)
             self.wd = SERVER + chr(msg[0]) + '/'
+            self.root = self.wd
             return
 
         # msg stucture: nonce (16 bytes)
@@ -86,28 +88,28 @@ class Serverif:
             login(netif, msg)
             return
 
-        rsp_code = FAILURE
+        rsp_plain = FAILURE
         if cmd == MKD:
-            rsp_code = mkd(self.wd, arg)
+            rsp_plain = mkd(self.wd, arg)
         elif cmd == RMD:
-            rsp_code = rmd(self.wd, arg)
+            rsp_plain = rmd(self.wd, arg)
         elif cmd == GWD:
-            rsp_code = gwd(self.wd)
+            rsp_plain = gwd(self.wd)
         elif cmd == CWD:
             # self.wd = cwd(self.wd, self.session.key, arg)
-            rsp_code = cwd()
+            self.wd, rsp_plain = cwd(self.root, self.wd, arg)
         elif cmd == LST:
-            rsp_code = lst(self.wd, arg)
+            rsp_plain = lst(self.wd, arg)
         elif cmd == UPL:
-            rsp_code = upl()
+            rsp_plain = upl(self.wd, arg)
         elif cmd == DNL:
-            rsp_code = dnl()
+            rsp_plain = dnl(self.wd, arg)
         elif cmd == RMF:
-            rsp_code = rmf(self.wd, arg)
+            rsp_plain = rmf(self.wd, arg)
         elif cmd == LOGOUT:
-            rsp_code = logout()
+            rsp_plain = logout()
 
-        rsp = build_msg(addr, self.session, rsp_code)
+        rsp = build_msg(addr, self.session, rsp_plain)
         netif.send_msg(addr, rsp)
         self.session.sqn_snd += 1
 
@@ -115,11 +117,13 @@ class Serverif:
             self.session = None
             self.wd = ''
 
-def build_msg(addr, session, rsp_code):
+def build_msg(addr, session, arg):
     header = addr.encode('utf-8') + (session.sqn_snd + 1).to_bytes(length=4, byteorder='big')  # header: addr + msn (5 bytes)
-    return encrypt(session.key, header, rsp_code)
+    return encrypt(session.key, header, arg)
 
 # TODO: check hash
+## read in password hash for the given address
+## hash pswd and check for equality
 def correct_password(addr, pswd):
     kfile = open('server_keys/rsa-encryption-keypair.pem', 'r')
     keypairstr = kfile.read()
@@ -191,33 +195,37 @@ def rmd(wd, dirname):
     else:
         return FAILURE
 
-# TODO: implement
 def gwd(wd):
     # send wd to client
-    print('GWD operation not yet implemented')
-    return FAILURE
+    return SUCCESS + wd.encode('utf-8')
 
-# TODO: implement
-def cwd():
-    print('CWD operation not yet implemented')
-    return FAILURE
+# Works backwords/forwards if client inputs complete pathname, eg: ./server/U/dirname 
+def cwd(root, wd, dirname):
+    if dirname[:12] != root:
+        return wd, FAILURE
+    if os.path.exists(dirname):
+        return dirname, SUCCESS
+    return wd, FAILURE
 
-# TODO: send list back to client
 def lst(wd, dirname):
     if os.path.exists(wd + dirname):
-        print(os.listdir(wd + dirname))
-        # return SUCCESS
-    print('LST operation not yet implemented')
+        files = '   '
+        for r in os.listdir(wd + dirname):
+            files += r + '  '
+        return SUCCESS + files.encode('utf-8')[:-2]
     return FAILURE
 
-# TODO: implement
-def upl():
-    print('UPL operation not yet implemented')
-    return FAILURE
+def upl(wd, arg):
+    fname = arg[:arg.index('\n')]
+    msg = arg[len(fname) + 1:].encode('utf-8')
+    fname = fname[fname.rfind('/') + 1:]
+    with open(wd + '/' + fname, 'wb') as f: f.write(msg)
+    return SUCCESS
 
-# TODO: implement
-def dnl():
-    print('DNL operation not yet implemented')
+def dnl(wd, fname):
+    if os.path.exists(wd + fname):
+        f = '\n' + open(wd + fname, 'r').read() + '\n'
+        return SUCCESS + f.encode('utf-8')
     return FAILURE
 
 def rmf(wd, fname):

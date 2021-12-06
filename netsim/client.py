@@ -45,6 +45,9 @@ if user.session is not None:
 
         # build message based on input
         msg = build_msg(user.addr, user.session, cmd, arg)
+        if cmd == 'UPL' and msg is None:
+            print('Invalid filename')
+            continue
 
         # send message
         netif.send_msg(dst, msg)
@@ -69,6 +72,8 @@ if user.session is not None:
                     print('Logout success. Goodbye.')
                     quit()
                 print('Command successfully executed')
+                if arg is not None:
+                    print(arg)
             else:
                 print('Unable to complete command')
         # print success/failure message
