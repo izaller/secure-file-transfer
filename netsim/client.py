@@ -11,6 +11,7 @@ from aes_ops import check_sqn, decrypt
 
 SUCCESS = '1'
 FAILURE = '0'
+FORCED_LOGOUT = '2'
 
 NET_PATH = './network'
 OWN_ADDR = input('Enter user address: ')
@@ -64,6 +65,10 @@ if user.session is not None:
 
             # set user.session.rsp = sqn_rsp
             user.session.sqn_rcv = sqn_rsp
+
+            if rsp_code == FORCED_LOGOUT:
+                print("Session Expired. You have been logged out.")
+                quit()
 
             # check success/failure code
             if rsp_code == SUCCESS:

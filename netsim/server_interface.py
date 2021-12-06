@@ -22,6 +22,7 @@ RSA_BLOCK_SIZE = 512  # using 4096 when generating key
 SUCCESS = b'1'
 FAILURE = b'0'
 SERVER_UNAVAILABLE = b'X'
+FORCED_LOGOUT = b'2'
 
 LOGIN = '0'
 MKD = '1'
@@ -117,6 +118,12 @@ class Serverif:
             self.session = None
             self.wd = ''
 
+    def force_logout(self, netif):
+        if self.session:
+            rsp = build_msg('S', self.session, FORCED_LOGOUT)
+            netif.send_msg(self.session.partner, rsp)
+        return
+
 def build_msg(addr, session, arg):
     header = addr.encode('utf-8') + (session.sqn_snd + 1).to_bytes(length=4, byteorder='big')  # header: addr + msn (5 bytes)
     return encrypt(session.key, header, arg)
@@ -199,7 +206,7 @@ def gwd(wd):
     # send wd to client
     return SUCCESS + wd.encode('utf-8')
 
-# Works backwords/forwards if client inputs complete pathname, eg: ./server/U/dirname 
+# Works backwords/forwards if client inputs complete pathname, eg: ./server/U/dirname
 def cwd(root, wd, dirname):
     if dirname[:12] != root:
         return wd, FAILURE
