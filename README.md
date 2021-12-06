@@ -110,6 +110,7 @@ make directory with name dirname on the server
 ### RMD
 ```RMD [dirname]```
  remove directory with name dirname from the server
+ If directory is nonempty, also deletes all files within the directory from the server
 
 ### GWD
  ```GWD``` print the name of the current working directory
