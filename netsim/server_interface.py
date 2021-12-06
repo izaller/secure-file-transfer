@@ -12,6 +12,10 @@ from Crypto.Cipher import PKCS1_OAEP
 from Crypto.PublicKey import RSA
 from Crypto.Signature import PKCS1_PSS
 from aes_ops import *
+import sys
+
+sys.path.insert(0, 'server')
+
 from password_dictionary import password_dictionary
 
 from session import Session
@@ -132,18 +136,13 @@ def correct_password(addr, pswd):
     cipher = PKCS1_OAEP.new(keypair)
     pswd = cipher.decrypt(pswd)
     
-    ## hash pswd and check for equality
+    # hash pswd and check for equality
     h = SHA512.new()
-    h.update(pswd.encode('utf-8'))
+    h.update(pswd)
     hash = h.hexdigest()
 
     # checks password_dictionary in server folder which contains hashes for passwordX (A to Z)
-    for pswds in password_dictionary[addr]:
-        if pswd == pswds:
-            return True
-
-    return False
-
+    return hash == password_dictionary[addr]
     # return pswd.decode('utf-8') == PASSWORD
 
 def sign(msg):
