@@ -1,0 +1,10 @@
+The skytale cipher was used by the Spartans in the 3rd century BC.
+It is a transposition cipher (mixes letters of the plaintext).
+
+A strip of leather was wrapped around a wooden rod, the message was written,
+and the strip was unwrapped and transported. To "decrypt" the scrambled
+message, Spartans re-wrapped the leather around a rod of the same size
+to read the plaintext.
+
+key = diameter of the rod
+keyspace was small therefore easy to break!

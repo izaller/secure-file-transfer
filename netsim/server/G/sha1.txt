@@ -1,0 +1,7 @@
+SHA1
+
+SHA stands for Secure Hash Algorithm. SHA-1 is an
+iterative hash function with a hash size of 160 bits
+and input block size of 512 bits.
+
+SHA1 has been broken!

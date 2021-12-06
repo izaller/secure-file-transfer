@@ -1,0 +1,91 @@
+The enigma machine was the first electro-mechanical cipher.
+It was adopted by the German Army in 1926 and used heavily
+by Germans in WWII.
+
+Components:
+    -- keyboard: for input of the plaintext / ciphertext
+    -- lampboard: for display of the ciphertext / plaintex
+    -- plugboard: for swapping some input letter pairs
+    -- scrambler unit (including the rotors): producing the
+        ciphertext from the plaintext (and vice versa)
+
+What determines the Enigma key?
+– letter pairs swapped (e.g., A/L – P/R – T/D – B/W – K/F – O/Y)
+– order of rotors in the slots (e.g., II – III – I)
+– initial position of the rotors (e.g., R – D – D)
+
+What is the key space size?
+100391791500 x 6 x 26^3 ~ 2^53
+
+yet, Enigma was broken by the Allies in WWII
+– exploiting protocol weaknesses and weak keys
+– code breaking was partly automated --> birth of first computers
+– credit goes to Marian Rejewski and Alan Turing
+
+every morning, the Germans distribute a daily setting to their units
+-- however, they do not directly use the daily setting to encrypt messages
+-- instead:
+    – they generate a fresh message key (letter triplet for rotor positions) for every message
+    – they encrypt the message key with the daily setting, and send this at the beginning of the
+        communication
+    – then they encrypt the message with the message key, and send it to the receiver
+    – the receiver first decrypts the message key with the daily setting and then decrypts the
+        message with the message key
+-- in order to cope with errors during transmission, the message key is
+   repeated twice at the beginning of the message!
+
+Breaking enigma:
+-- Rejewski thought that the repetition of the message key at the
+beginning of the message is a weakness that may be exploited
+-- a guess for the daily key can be confirmed by checking if decoding with the
+guessed key produces a repeating letter triplet at the beginning of the
+decoded message
+-- the Polish codebreakers built a machine that tried different guesses
+for the daily key in an automated way
+    – the machine consisted of 6 Enigma copies (each corresponding to one of the
+        6 possible rotor orders)
+    – the machine continuously modified the position setting of the rotors, and
+        attempted decrypting some intercepted message, until it found the daily key
+-- from 1933, Poles were able to routinly break encrypted German communications
+
+in December 1938, the Germans increase the security of the Enigma
+– 2 new rotors (operators have to choose 3 rotors out of 5, and the order in
+which they are put in the machine à this increases possible rotor
+placements from 6 to 60)
+– increase the number of letter pairs swapped on the plugboard from 6 to 10
+– key space grows to ~266
+
+in April 1939, Hitler breaks the non-aggression treaty with Poland
+in July 1939, Poland reveals their Enigma breaking capability to
+England
+on August 16, 1939, the design documents of the Enigma breaking
+machine are transferred to London
+on September 1, 1939, Germany invades Poland
+
+some weaknesses exploited by the British
+– cillies
+    » German Enigma operators sometimes used very weak (far from random)
+    message keys (e.g., QWE, BNM)
+    » an operator always used the same message key (C.I.L.) – perhaps the
+    initials of his wife or girl friend?
+    » these weak keys were called cillies (~silly)
+– Germans had usage constraints that actually weakened their system
+    » rotor order had to be changed every day, and the same rotor must not be
+    placed in the same slot on two consecutive days
+    » e.g., after I-II-V, they could not use III-II-IV
+    » this actually reduced the size of the key space that the British had to search
+    over
+
+in September 1939, Alan Turing joins the code breakers in Bletchley Park
+-- his task is to find a new method for breaking the cipher that does not rely on the
+repetition of the message key at the beginning of the coded message
+-- Turing invents a new method that is essentially an attack known today as the
+known-plaintext attack
+    – German messages are well structured
+    – some messages contain guessable words at guessable locations
+    – e.g., every morning at 6am, they send a weather forecast, which includes
+        the world ”wetter” always at the same position within the message
+-- the British build new Enigma breaking machines (Victory, Agnus Dei) based on
+the plans of Turing in 1940
+-- indeed, Germans change their message key sending protocol in May 1940, but
+this does not affect the cryptanalytic capabilities of the British anymore

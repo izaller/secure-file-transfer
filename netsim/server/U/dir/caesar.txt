@@ -1,0 +1,11 @@
+The caesar cipher was used by Julius Caesar. It is a
+substitution cipher (replaces letters of the plaintext).
+Each letter is replaced by the letter at some fixed
+number of positions (e.g., 3) down in the alphabet.
+
+plain:  A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+cipher: D E F G H I J K L M N O P Q R S T U V W X Y Z A B C
+example: BRUTUS --> EUXWXV
+
+key = value of the shift (of the alphabet)
+size of the key space is 26-1 = 25 à easy to break

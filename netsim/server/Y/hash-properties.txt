@@ -1,0 +1,16 @@
+Desired properties of hash functions
+
+ease of computation
+– given an input x, the hash value H(x) of x is easy to compute
+
+weak collision resistance (2nd preimage resistance)
+– given an input x, it is computationally infeasible to find a second input x’
+    such that H(x’) = H(x)
+
+strong collision resistance (collision resistance)
+– it is computationally infeasible to find any two distinct inputs x and x’
+    such that H(x) = H(x’)
+
+preimage resistance (one-way property)
+– given a hash value y (for which no preimage is known), it is
+    computationally infeasible to find any input x such that H(x) = y

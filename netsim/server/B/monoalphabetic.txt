@@ -1,0 +1,16 @@
+generalization of the Caesar cipher
+    -- replacement of letters is determined by a permutation
+
+plain:  A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+cipher: H T K C U O I S J Y A R G M Z N B V F P X D L W Q E
+example: BRUTUS --> TVXPXF
+
+key = the permutation
+key space is huge: 26! ~ 1.56*2^88
+
+attack:
+in case of monoalphabetic substitution, the ciphertext
+preserves the letter statistics of the original plaintext!
+    –- after decoding the most frequent and least frequent
+        letters, the rest of the text can be figured out much
+        like solving a crossword puzzle

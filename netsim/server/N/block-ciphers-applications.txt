@@ -1,0 +1,10 @@
+Applications of block ciphers
+
+primarily:
+– encryption of data (of any size, not just one block) --> confidentiality
+
+Can also be used as a building block for:
+– MAC functions à message integrity and authentication services
+– hash functions
+– PRNG (Pseudo-Random Number Generator)
+– key-stream generators for stream ciphers

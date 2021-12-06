@@ -1,0 +1,15 @@
+Block cipher usage modes
+
+we usually need to encrypt messages that are longer (or
+shorter) than the block size of the block cipher
+we can use the block cipher in different ”encryption modes”
+basic modes:
+    – Electronic Codebook (ECB) mode
+    – Cipher Block Chaining (CBC) mode
+    – Cipher Feedback (CFB) mode
+    – Output Feedback (OFB) mode
+    – Counter (CTR) mode
+authenticated encryption modes (will be covered later)
+    – CCM: CTR + CBC MAC
+    – GCM: Galois CTR mode
+    – OCB: Offset Codebook Mode

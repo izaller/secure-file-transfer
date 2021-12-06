@@ -1,0 +1,15 @@
+The history of cryptography in a nutshell:
+
+until the second half of the 20th century:
+    – cryptography = encryption, ciphers
+    – almost exclusively used in military and diplomacy
+in the second half of the 20th century:
+    – cryptography is increasingly used in business applications (banking,
+electronic funds transfer)
+    – besides confidentiality, integrity protection, authentication, and non- repudiation became important too
+at the end of the 20th century:
+    – cryptography is used in everyday life of people (although they may be unaware of that)
+    » web transactions, mobile devices, WiFi, Bluetooth, smart cards, ...
+21st century:
+    – certain cryptographic algorithms are endangered by quantum computing
+    – post-quantum cryptography gains momentum

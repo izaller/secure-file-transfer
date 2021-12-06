@@ -1,0 +1,18 @@
+Properties of the one-time pad
+
+perfect secrecy
+    –- informally: observing the encrypted message provides no information (in
+        an information theoretic sense) about the original message
+    -– formally: H(m|c) = H(m), where H(x) is the entropy of x
+
+large key size
+    -– needs a truly random key that has the same length as the (compressed)
+        message
+
+impractical in many applications
+    -– how to send the key in a secure way to the recipient?
+    -– in practice, the only possibility is to exchange a large amount of truly
+        random key material in an out-of-band manner (e.g., by physical
+        meeting, via a quantum channel) before the communication takes place
+    -– we have to do this with all potential communication partners
+    -– key management becomes cumbersome

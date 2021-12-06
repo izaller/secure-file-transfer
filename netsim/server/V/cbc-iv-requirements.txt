@@ -1,0 +1,12 @@
+Requirements on the IV for CBC
+
+the IV size is the block size of the cipher
+
+the IV needs to be transferred to the receiver
+– it is usually sent at the beginning of the message
+
+the IV does not need to be secret, but it must be unpredictable by
+the attacker
+– the problem with predictable IVs will be explained later
+
+it is also advantageous if the IV cannot be manipulated at will...

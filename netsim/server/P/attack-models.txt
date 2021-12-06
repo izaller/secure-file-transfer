@@ -1,0 +1,18 @@
+Attack models
+
+attack objectives:
+    – systematic decoding of plaintexts
+    – figuring out the key (breaking the key)
+
+attacker capabilities:
+    – ciphertext-only attack (basic model)
+    – known-plaintext attack (example?)
+    – (adaptive) chosen-plaintext attack (example?)
+    – (adaptive) chosen-ciphertext attack (example?)
+
+attack complexity measures:
+    – data complexity
+    – storage complexity
+    – processing complexity
+        » expected number of “basic operations” required for the attack
+        » parallelization may reduce attack time but not processing complexity!
