@@ -1,0 +1,14 @@
+Stream ciphers
+
+idea: simulate the truly random key stream of the one-time pad
+with a pseudo-random sequence generated from a random seed
+
+the key stream is generated independently of the plaintext and of
+the ciphertext – key K is used to initialize an internal state s (seed the generator)
+– once initialized, the state is updated using some function f after each step
+– the output is generated from the state with another function g
+
+effective size of the state space must be large
+– otherwise the key stream starts repeating
+– if two plaintext characters mi and mj are encrypted with the same key character z,
+then the XOR sum of the ciphertext characters (mi + z) + (mj + z) = mi + mj

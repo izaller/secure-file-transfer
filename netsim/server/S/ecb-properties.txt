@@ -1,0 +1,12 @@
+Properties of ECB
+
+encrypting the same plaintext with the same key results in the
+same ciphertext (no randomization)
+identical plaintext blocks result in identical ciphertext blocks
+(under the same key of course)
+– messages to be encrypted often have very regular formats
+– repeating fragments, string of 0s, ... are quite common
+does not properly hide patterns in the plaintext
+
+overall: not recommended for messages longer than one block,
+or if keys are reused for more than one block

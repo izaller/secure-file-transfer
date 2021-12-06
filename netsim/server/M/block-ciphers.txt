@@ -1,0 +1,6 @@
+Block ciphers
+
+Block ciphers operate on blocks of bits (typical block size is n = 128 bits).
+They are stateless (unlike stream ciphers). They cannot be efficiently
+distinguished from a random permutation. If K is unknown, the output is
+unpredictable (even parts of it, and even when some input-output pairs are known)

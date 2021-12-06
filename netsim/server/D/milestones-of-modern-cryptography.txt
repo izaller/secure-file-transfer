@@ -1,0 +1,7 @@
+-- Shannon’s work on information theoretical characterization of encryption [1948]
+-- substitution-permutation ciphers and the Data Encryption
+    Standard (DES) [1970’s]
+-- the birth of public key cryptography [1976-78]
+-- quantum cryptography [1980’s]
+-- cryptography becomes available to the general public [1990’s]
+-- post-quantum cryptography [now!]

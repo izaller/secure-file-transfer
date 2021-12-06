@@ -1,0 +1,11 @@
+encryption
+    –- represent the message as a sequence of bytes: m1 m2 ... mL
+    –- take a sequence of true random bytes: k1 k2 ... kL
+    –- obtain the encrypted message by XOR-ing them together:
+        m1 m2 ... mL + k1 k2 ... kL = c1 c2 ... cL
+        where ci = mi + ki for all i = 1, ..., L
+
+decryption
+    -– XOR the same stream of key bytes to the encrypted message:
+        c1 c2 ... cL + k1 k2 ... kL = m1 m2 ... mL
+        (because ci + ki = mi + ki + ki = mi)

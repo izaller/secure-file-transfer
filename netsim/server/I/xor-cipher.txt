@@ -1,0 +1,7 @@
+encryption
+    –- represent the plaintext as a sequence of bytes
+    –- take a password and repeat it many times to get a byte string as long as the plaintext
+    –- obtain the ciphertext by XOR-ing together the plaintext and the password string
+
+decryption
+    –- XOR the same password string to the ciphertext to recover the plaintext

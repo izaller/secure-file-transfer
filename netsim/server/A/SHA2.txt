@@ -1,0 +1,13 @@
+SHA2
+
+SHA-2 is a family of iterative hash functions published by NIST in
+2001
+– SHA-256 and SHA-512 are new hash functions with identical structure
+    but different word size (32 and 64 bits, respectively)
+– SHA-224 and SHA-384 are truncated versions of SHA-256 and SHA-512,
+    respectively, and they use different CV0 values
+– SHA-512/224 and SHA-512/256 are also truncated versions of SHA-512,
+    but the CV0 values are generated using a special method described in
+    the FIPS 180-4 standard
+– numbers in the name specify the output size, e.g., SHA-256 produces
+    256 bit hash values

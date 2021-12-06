@@ -1,0 +1,15 @@
+Padding for block encryption
+
+the length of the message may not be a multiple of the cipher’s
+block size
+
+we must add some extra bytes to the short end block such that it
+reaches the correct size – this is called padding
+
+the receiver must be able to unambiguously recognize and
+remove the padding
+
+due to this unambiguity requirement, padding is actually always
+used, even in the case when the length of the original message is
+a multiple of the block size (in this case, an entire extra block is
+added to the message)

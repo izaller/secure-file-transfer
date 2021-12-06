@@ -1,0 +1,15 @@
+Properties of CTR
+
+it is crucial that counter values do not repeat, otherwise…
+– given Y = EK(ctr) + X and Y’ = EK(ctr) + X’,
+    the attacker can compute Y + Y’ = X + X’
+– hence, if X (or part of it) is known then X’ (or part of it) is disclosed
+
+does not provide any integrity protection
+– similar to the case of steam ciphers, an attacker can perform controlled
+modifications on the plaintext by manipulating the ciphertext
+
+does not increase message length (unlike CBC with padding)
+
+in addition, CTR mode is parallelizable, and allows for random
+access and pre-computation

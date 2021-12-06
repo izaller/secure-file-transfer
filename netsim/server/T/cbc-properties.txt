@@ -1,0 +1,17 @@
+Properties of CBC
+
+encrypting the same plaintexts under the same key, but
+different IVs result in different ciphertexts
+
+ciphertext block Yi depends on Xi and all preceding plaintext
+blocks
+– however, dependency on the preceding plaintext blocks is only via the
+previous ciphertext block Yi-1
+– hence, proper decryption of a correct ciphertext block needs a correct
+preceding ciphertext block only (chosen ciphertext attacks are possible)
+
+self-synchronizing property:
+– automatically recovers from loss of a ciphertext block
+
+parallel computation (only for decryption), random access, no
+pre-computation

@@ -1,0 +1,13 @@
+Kerckhoff's second principle
+
+Kerckhoffs’ 2nd Principle says that it must be assumed that the
+encryption algorithm is known to the attacker. In other words,
+the security of the system cannot depend on the secrecy of the
+algorithm (no security by obscurity).
+
+advantages of adherence to the 2nd Principle:
+    -– secrecy of an algorithm can be broken by reverse engineering the
+        implementation or by leaking out design documents (many examples)
+    -– published designs undergo public scrutiny
+    -– it is better if security flaws are revealed by “white hat guys”
+    -– public designs allow for standards
