@@ -125,6 +125,7 @@ class Serverif:
         if self.session:
             rsp = build_msg('S', self.session, FORCED_LOGOUT)
             netif.send_msg(self.session.partner, rsp)
+            self.session = None
         return
 
 def build_msg(addr, session, arg):
