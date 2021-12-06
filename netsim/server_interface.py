@@ -106,6 +106,7 @@ class Serverif:
         elif cmd == UPL:
             rsp_plain = upl(self.wd, arg)
         elif cmd == DNL:
+            print(self.wd)
             rsp_plain = dnl(self.wd, arg)
         elif cmd == RMF:
             rsp_plain = rmf(self.wd, arg)
@@ -140,7 +141,7 @@ def correct_password(addr, pswd):
     keypair = RSA.import_key(keypairstr)
     cipher = PKCS1_OAEP.new(keypair)
     pswd = cipher.decrypt(pswd)
-    
+
     # hash pswd and check for equality
     h = SHA512.new()
     h.update(pswd)
@@ -219,6 +220,8 @@ def cwd(root, wd, dirname):
     if dirname[:11] != root:
         return wd, FAILURE
     if os.path.exists(dirname):
+        if dirname[-1] != '/':
+            dirname += '/'
         return dirname, SUCCESS
     return wd, FAILURE
 
