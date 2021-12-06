@@ -206,6 +206,8 @@ def mkd(wd, dirname):
 def rmd(wd, dirname):
     if dirname == '.': return FAILURE
     if os.path.exists(wd + dirname):
+        for r in os.listdir(wd + dirname):
+            os.remove(wd + dirname + '/' + r)
         os.rmdir(wd + dirname)
         return SUCCESS
     else:
