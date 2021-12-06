@@ -31,6 +31,9 @@ parameters. The folders correspond to addresses of users on the network.
 The server only accepts one user logged on at a time. Commands or login requests from
 users other than the currently logged on user will not be accepted.
 
+If no messages from the logged on user are received for 1 minute, forces the user
+to log out. (note: time frame is short for demonstration purposes)
+
 Message format to server:```[nonce | header | message | tag]``` 
 
 ## client.py
