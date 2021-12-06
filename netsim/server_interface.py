@@ -12,6 +12,11 @@ from Crypto.Cipher import PKCS1_OAEP
 from Crypto.PublicKey import RSA
 from Crypto.Signature import PKCS1_PSS
 from aes_ops import *
+import sys
+
+sys.path.insert(0, 'server')
+
+from password_dictionary import password_dictionary
 
 from session import Session
 
@@ -128,9 +133,7 @@ def build_msg(addr, session, arg):
     header = addr.encode('utf-8') + (session.sqn_snd + 1).to_bytes(length=4, byteorder='big')  # header: addr + msn (5 bytes)
     return encrypt(session.key, header, arg)
 
-# TODO: check hash
 ## read in password hash for the given address
-## hash pswd and check for equality
 def correct_password(addr, pswd):
     kfile = open('server_keys/rsa-encryption-keypair.pem', 'r')
     keypairstr = kfile.read()
@@ -139,7 +142,15 @@ def correct_password(addr, pswd):
     keypair = RSA.import_key(keypairstr)
     cipher = PKCS1_OAEP.new(keypair)
     pswd = cipher.decrypt(pswd)
-    return pswd.decode('utf-8') == PASSWORD
+    
+    # hash pswd and check for equality
+    h = SHA512.new()
+    h.update(pswd)
+    hash = h.hexdigest()
+
+    # checks password_dictionary in server folder which contains hashes for passwordX (A to Z)
+    return hash == password_dictionary[addr]
+    # return pswd.decode('utf-8') == PASSWORD
 
 def sign(msg):
     # sigS(addr | g^x mod p | S | g^y mod p)
